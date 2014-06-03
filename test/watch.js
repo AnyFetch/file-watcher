@@ -21,7 +21,6 @@ before(function() {
 describe('File watcher', function() {
 	it('should ping callback on file added', function(done) {
 		var watcher = fileWatcher(DEFAULT_DIR, function(event, filename) {
-			console.log(event, filename);
 			watcher.close();
 			done();
 		});
