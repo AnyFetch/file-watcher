@@ -1,0 +1,31 @@
+{
+  "name": "anyfetch-file-watcher",
+  "description": "Watch for file changes, and send them to anyFetch.",
+  "version": "0.3.15",
+  "author": "Matthieu Bacconnier <matthieu@anyfetch.com>",
+  "scripts": {
+    "test": "NODE_ENV=test mocha -R spec test/",
+    "lint": "jshint lib/ test/"
+  },
+  "main": "./lib/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AnyFetch/anyfetch-provider.js"
+  },
+  "keywords": [
+    "anyfetch",
+    "provider"
+  ],
+  "dependencies": {
+    "async": "0.9.x",
+    "anyfetch": ">=0.2.23"
+  },
+  "devDependencies": {
+    "mocha": "1.x.x",
+    "should": "3.3.x"
+  },
+  "licence": "MIT",
+  "engines": {
+    "node": ">=0.10"
+  }
+}
