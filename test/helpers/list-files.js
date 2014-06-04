@@ -39,7 +39,10 @@ describe("Retrieve file", function () {
       }
 
       // Should contain new files and updated files
-      fileToUpload.should.eql(['/txt3.txt', '/test/txt1.doc', '/test/txt2.txt']);
+      fileToUpload.should.include('/txt3.txt');
+      fileToUpload.should.include('/test/txt1.doc');
+      fileToUpload.should.include('/test/txt2.txt');
+      fileToUpload.should.have.lengthOf(3);
       newCursor.should.eql({
         '/txt1.txt': fs.statSync(__dirname + '/../sample-directory/txt1.txt').mtime.getTime(),
         '/txt2.txt': fs.statSync(__dirname + '/../sample-directory/txt2.txt').mtime.getTime(),
