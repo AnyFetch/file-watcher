@@ -11,13 +11,15 @@ npm install -g anyfetch-file-watcher
 ```
 
 ## Usage
-You need an access-token from AnyFetch. If you are not interested with OAuth, a simple `GET https://api.anyfetch.com/token` will retrieve one for you.
+You need an access-token from AnyFetch. If you are not interested with OAuth, a simple authenticated call to `GET https://api.anyfetch.com/token` will retrieve one for you.
 
 ```sh
 anyfetch-file-watcher $DIRECTORY_TO_WATCH $ACCESS_TOKEN
 ```
 
 The command is long running, and will watch for file changes until the process dies.
+
+> You can omit the `$ACCESS_TOKEN` and enter it interactively.
 
 ## Reset
 Every time you run this command, a JSON file is stored in `~/.anyfetch-file-watcher/$ACCESS_TOKEN/$STRIPPED_DIRECTORY.json` with cursor details. If you want to resend everything, remove this file.
