@@ -4,7 +4,7 @@
   "version": "0.3.15",
   "author": "Matthieu Bacconnier <matthieu@anyfetch.com>",
   "scripts": {
-    "test": "NODE_ENV=test mocha --recursive  -R spec test/",
+    "test": "NODE_ENV=test mocha --recursive  -R spec test/ -t 5000",
     "lint": "jshint lib/ test/"
   },
   "main": "./lib/",

@@ -28,7 +28,7 @@ describe('uploadFile', function() {
 
   it('should upload the file', function(done) {
 
-    uploadFile(__dirname + "/../sample-directory/txt1.txt", "randomAccessToken", "randomBaseIdentifier", function(err) {
+    uploadFile(__dirname + "/..", "/sample-directory/txt1.txt", "randomAccessToken", "randomBaseIdentifier", function(err) {
       if(err) {
         throw err;
       }
