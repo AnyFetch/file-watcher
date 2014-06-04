@@ -4,17 +4,17 @@
   "version": "0.3.15",
   "author": "Matthieu Bacconnier <matthieu@anyfetch.com>",
   "scripts": {
-    "test": "NODE_ENV=test mocha -R spec test/",
+    "test": "NODE_ENV=test mocha --recursive  -R spec test/",
     "lint": "jshint lib/ test/"
   },
   "main": "./lib/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AnyFetch/anyfetch-provider.js"
+    "url": "https://github.com/AnyFetch/file-watcher"
   },
   "keywords": [
     "anyfetch",
-    "provider"
+    "file-watcher"
   ],
   "dependencies": {
     "async": "0.9.x",
