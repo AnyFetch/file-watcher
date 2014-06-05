@@ -9,7 +9,7 @@ describe('uploadFile', function() {
 
   process.env.ANYFETCH_API_URL = 'http://localhost:1338';
   var countFile = 0;
-  var cb = function(url){
+  var mockServerHandler = function(url){
     if (url.indexOf("/file") !== -1) {
       countFile += 1;
     }
@@ -18,7 +18,7 @@ describe('uploadFile', function() {
 
   before(function() {
     // Create a fake HTTP server
-    apiServer = Anyfetch.debug.createTestApiServer(cb);
+    apiServer = Anyfetch.debug.createTestApiServer(mockServerHandler);
     apiServer.listen(1338);
   });
 
