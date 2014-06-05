@@ -4,9 +4,7 @@
 
 var fs = require('fs');
 
-var sendToAnyFetch = require('../lib/index');
-
-console.log(process.argv);
+var sendToAnyFetch = require('../lib/');
 
 if (process.argv.length !== 4) {
   console.log("You have to provide a directory and an access token");

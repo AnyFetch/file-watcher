@@ -1,9 +1,10 @@
 'use strict';
 
 require('should');
+var Anyfetch = require('anyfetch');
+var path = require('path');
 
 var uploadFile = require('../../lib/helpers/upload.js').uploadFile;
-var Anyfetch = require('anyfetch');
 
 describe('uploadFile', function() {
 
@@ -28,7 +29,7 @@ describe('uploadFile', function() {
 
   it('should upload the file', function(done) {
 
-    uploadFile(__dirname + "/..", "/sample-directory/txt1.txt", "randomAccessToken", "randomBaseIdentifier", function(err) {
+    uploadFile(path.resolve(__dirname + "/.."), "/sample-directory/txt1.txt", "randomAccessToken", "randomBaseIdentifier", "RandomDate", function(err) {
       if(err) {
         throw err;
       }
