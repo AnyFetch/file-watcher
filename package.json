@@ -18,7 +18,7 @@
   ],
   "dependencies": {
     "async": "0.9.x",
-    "anyfetch": ">=0.2.23"
+    "anyfetch": ">=0.2.24"
   },
   "devDependencies": {
     "mocha": "1.x.x",

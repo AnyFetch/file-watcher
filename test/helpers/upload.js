@@ -5,14 +5,21 @@ var Anyfetch = require('anyfetch');
 var path = require('path');
 
 var uploadFile = require('../../lib/helpers/upload.js').uploadFile;
+var deleteFile = require('../../lib/helpers/upload.js').deleteFile;
 
 describe('uploadFile', function() {
 
   process.env.ANYFETCH_API_URL = 'http://localhost:1338';
-  var countFile = 0;
+
+  var countUploadedFile = 0;
+  var countDeletedFile = 0;
+
   var mockServerHandler = function(url){
-    if (url.indexOf("/file") !== -1) {
-      countFile += 1;
+    if(url.indexOf("/file") !== -1) {
+      countUploadedFile += 1;
+    }
+    if(url.indexOf("/file") === -1 && url.indexOf("/identifier") !== -1){
+      countDeletedFile += 1;
     }
   };
   var apiServer;
@@ -33,7 +40,19 @@ describe('uploadFile', function() {
       if(err) {
         throw err;
       }
-      countFile.should.be.eql(1);
+      countUploadedFile.should.eql(1);
+      done();
+    });
+
+  });
+
+  it('should delete the file', function(done) {
+
+    deleteFile("/sample-directory/txt1.txt", "randomAccessToken", "randomBaseIdentifier", function(err) {
+      if(err) {
+        throw err;
+      }
+      countDeletedFile.should.eql(1);
       done();
     });
 
