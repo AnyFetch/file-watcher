@@ -17,8 +17,9 @@
     "file-watcher"
   ],
   "dependencies": {
+    "anyfetch": ">=0.2.24",
     "async": "0.9.x",
-    "anyfetch": ">=0.2.24"
+    "watch": "^0.10.0"
   },
   "devDependencies": {
     "mocha": "1.x.x",
