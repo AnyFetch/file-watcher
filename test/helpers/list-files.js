@@ -4,7 +4,7 @@ require('should');
 
 var fs = require("fs");
 var path = require("path");
-var listFiles = require('../../lib/helpers/list-files.js');
+var listFiles = require('../../lib/helpers/list-files');
 var getCursorFromDirectory = listFiles.getCursorFromDirectory;
 var retrieveFiles = listFiles.retrieveFiles;
 
@@ -33,7 +33,7 @@ describe("Retrieve file", function () {
       '/txt2.txt': fs.statSync(__dirname + '/../sample-directory/txt2.txt').mtime.getTime(),
       '/test/txt1.doc': fs.statSync(__dirname + '/../sample-directory/test/txt1.doc').mtime.getTime() - 500,
     };
-    retrieveFiles(path.resolve("test/sample-directory"), cursor, function(err, fileToUpload, newCursor) {
+    retrieveFiles(path.resolve("test/sample-directory"), cursor, function(err, fileToUpload, fileToDelete, newCursor) {
       if(err) {
         throw err;
       }

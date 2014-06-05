@@ -4,8 +4,8 @@ require('should');
 var Anyfetch = require('anyfetch');
 var path = require('path');
 
-var uploadFile = require('../../lib/helpers/upload.js').uploadFile;
-var deleteFile = require('../../lib/helpers/upload.js').deleteFile;
+var uploadFile = require('../../lib/helpers/upload').uploadFile;
+var deleteFile = require('../../lib/helpers/upload').deleteFile;
 
 describe('uploadFile', function() {
 
