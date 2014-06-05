@@ -27,5 +27,16 @@
   "licence": "MIT",
   "engines": {
     "node": ">=0.10"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/AnyFetch/file-watcher/issues"
+  },
+  "homepage": "https://github.com/AnyFetch/file-watcher",
+  "bin": {
+    "anyfetch-file-watcher": "filewatcher.js"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "license": "MIT"
 }
