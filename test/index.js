@@ -3,12 +3,14 @@
 require('should');
 
 var path = require('path');
-var update = require('../../lib/helpers/cursor.js');
 var Anyfetch = require('anyfetch');
+var fs = require('fs');
+
+var update = require('../lib/index.js');
+var getSavePath = require('../lib/helpers/save-path.js');
 
 
 describe('update() function', function() {
-
   process.env.ANYFETCH_API_URL = 'http://localhost:1338';
   var countFile = 0;
   var mockServerHandler = function(url){
@@ -26,10 +28,14 @@ describe('update() function', function() {
 
   after(function(){
     apiServer.close();
+
+    // Clean cursor
+
+    fs.unlinkSync(getSavePath(path.resolve(__dirname + "/../test/sample-directory")));
   });
 
   it('should update account', function(done) {
-    update(path.resolve(__dirname + "/../sample-directory"), "randomAccessToken", function(err) {
+    update(path.resolve(__dirname + "/../test/sample-directory"), "randomAccessToken", function(err) {
       if(err) {
         throw err;
       }
