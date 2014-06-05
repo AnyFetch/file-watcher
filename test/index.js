@@ -7,7 +7,7 @@ var Anyfetch = require('anyfetch');
 var fs = require('fs');
 
 var update = require('../lib/index.js');
-var getSavePath = require('../lib/helpers/save-path.js');
+var getSavePath = require('../lib/helpers/save-path.js').getSavePath;
 
 
 describe('update() function', function() {
