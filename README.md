@@ -22,4 +22,4 @@ The command is long running, and will watch for file changes until the process d
 > You can omit the `$ACCESS_TOKEN` and enter it interactively.
 
 ## Reset
-Every time you run this command, a JSON file is stored in `~/.anyfetch-file-watcher/$ACCESS_TOKEN/$STRIPPED_DIRECTORY.json` with cursor details. If you want to resend everything, remove this file.
+Every time you run this command, a JSON file is stored in `~/.anyfetch-file-watcher/$STRIPPED_DIRECTORY.json` with cursor details. If you want to resend everything, remove this file.
