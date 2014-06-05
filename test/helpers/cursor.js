@@ -11,9 +11,11 @@ var saveCursor = require('../../lib/helpers/cursor').saveCursor;
 var getCursor = require('../../lib/helpers/cursor').getCursor;
 var getCursorPath = require('../../lib/helpers/cursor').getCursorPath;
 
-describe('getCursor', function() {
 
-  it('should get the curspr', function(done) {
+describe('getCursor', function() {
+  var dir = __dirname;
+
+  it('should get the cursor', function(done) {
 
     var cursor = {
       '/txt1.txt': fs.statSync(__dirname + '/../sample-directory/txt1.txt').mtime.getTime(),
@@ -21,7 +23,6 @@ describe('getCursor', function() {
       '/test/txt1.doc': fs.statSync(__dirname + '/../sample-directory/test/txt1.doc').mtime.getTime() - 500,
     };
 
-    var dir = __dirname;
 
     async.waterfall([
       function createCursor(cb) {
@@ -35,22 +36,24 @@ describe('getCursor', function() {
         cb();
       }
     ], done);
-
   });
-});
 
+  after(function() {
+    // Clean cursor
+    fs.unlinkSync(getCursorPath(dir));
+  });
+
+});
 
 describe('addOrUpdateFile', function() {
   var dir = __dirname;
 
   it('should add the file', function(done) {
-
     var cursor = {
       '/txt1.txt': fs.statSync(__dirname + '/../sample-directory/txt1.txt').mtime.getTime(),
       '/txt2.txt': fs.statSync(__dirname + '/../sample-directory/txt2.txt').mtime.getTime(),
       '/test/txt1.doc': fs.statSync(__dirname + '/../sample-directory/test/txt1.doc').mtime.getTime() - 500,
     };
-
 
     async.waterfall([
       function createCursor(cb) {
@@ -68,10 +71,9 @@ describe('addOrUpdateFile', function() {
         cb();
       }
     ], done);
-
   });
 
-  after(function(){
+  after(function() {
     // Clean cursor
     fs.unlinkSync(getCursorPath(dir));
   });
@@ -83,13 +85,11 @@ describe('removeFile', function() {
   var dir = __dirname;
 
   it('should add the file', function(done) {
-
     var cursor = {
       '/txt1.txt': fs.statSync(__dirname + '/../sample-directory/txt1.txt').mtime.getTime(),
       '/txt2.txt': fs.statSync(__dirname + '/../sample-directory/txt2.txt').mtime.getTime(),
       '/test/txt1.doc': fs.statSync(__dirname + '/../sample-directory/test/txt1.doc').mtime.getTime() - 500,
     };
-
 
     async.waterfall([
       function createCursor(cb) {
@@ -109,7 +109,7 @@ describe('removeFile', function() {
     ], done);
   });
 
-  after(function(){
+  after(function() {
     // Clean cursor
     fs.unlinkSync(getCursorPath(dir));
   });
