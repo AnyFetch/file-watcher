@@ -29,7 +29,7 @@
     "node": ">=0.10"
   },
   "bin": {
-    "anyfetch-file-watcher": "anyfetch-file-watcher"
+    "anyfetch-file-watcher": "./bin/anyfetch-file-watcher"
   },
   "directories": {
     "test": "test"
