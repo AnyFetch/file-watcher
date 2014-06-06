@@ -6,6 +6,7 @@ var fs = require('fs');
 var Anyfetch = require('anyfetch');
 
 var watcher = require('../lib/watcher');
+var getCursorPath = require('../lib/helpers/cursor').getCursorPath;
 
 
 describe('watcher', function() {
@@ -35,6 +36,10 @@ describe('watcher', function() {
 
   after(function(){
     apiServer.close();
+  });
+
+  after(function(){
+    fs.unlinkSync(getCursorPath(dir));
   });
 
   it('should send file on create', function(done) {
