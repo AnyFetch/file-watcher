@@ -5,8 +5,8 @@ require('should');
 var fs = require('fs');
 var async = require('async');
 
-var addOrUpdateFile = require('../../lib/helpers/cursor').addOrUpdateFile;
-var removeFile = require('../../lib/helpers/cursor').removeFile;
+var addOrUpdateFiles = require('../../lib/helpers/cursor').addOrUpdateFiles;
+var removeFiles = require('../../lib/helpers/cursor').removeFiles;
 var saveCursor = require('../../lib/helpers/cursor').saveCursor;
 var getCursor = require('../../lib/helpers/cursor').getCursor;
 var getCursorPath = require('../../lib/helpers/cursor').getCursorPath;
@@ -63,7 +63,7 @@ describe('addOrUpdateFile()', function() {
         saveCursor(dir, cursor, cb);
       },
       function addFile(cb) {
-        addOrUpdateFile(dir, "/afile.txt", "aRandomDate", cb);
+        addOrUpdateFiles(dir, {"/afile.txt": "aRandomDate"}, cb);
       },
       function getNewCursor(cb) {
         getCursor(dir, cb);
@@ -102,7 +102,7 @@ describe('removeFile()', function() {
         saveCursor(dir, cursor, cb);
       },
       function removeAFile(cb) {
-        removeFile(dir, "/txt1.txt", cb);
+        removeFiles(dir, ["/txt1.txt"], cb);
       },
       function getNewCursor(cb) {
         getCursor(dir, cb);

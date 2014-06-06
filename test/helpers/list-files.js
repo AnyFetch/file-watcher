@@ -33,24 +33,16 @@ describe("Retrieve file", function () {
       '/txt2.txt': fs.statSync(__dirname + '/../sample-directory/txt2.txt').mtime.getTime(),
       '/test/txt1.doc': fs.statSync(__dirname + '/../sample-directory/test/txt1.doc').mtime.getTime() - 500,
     };
-    retrieveFiles(path.resolve("test/sample-directory"), cursor, function(err, fileToUpload, fileToDelete, newCursor) {
+    retrieveFiles(path.resolve("test/sample-directory"), cursor, function(err, filesToUpload) {
       if(err) {
         throw err;
       }
 
       // Should contain new files and updated files
-      fileToUpload.should.include('/txt3.txt');
-      fileToUpload.should.include('/test/txt1.doc');
-      fileToUpload.should.include('/test/txt2.txt');
-      fileToUpload.should.have.lengthOf(3);
-      newCursor.should.eql({
-        '/txt1.txt': fs.statSync(__dirname + '/../sample-directory/txt1.txt').mtime.getTime(),
-        '/txt2.txt': fs.statSync(__dirname + '/../sample-directory/txt2.txt').mtime.getTime(),
-        '/txt3.txt': fs.statSync(__dirname + '/../sample-directory/txt3.txt').mtime.getTime(),
-        '/test/txt1.doc': fs.statSync(__dirname + '/../sample-directory/test/txt1.doc').mtime.getTime(),
-        '/test/txt2.txt': fs.statSync(__dirname + '/../sample-directory/test/txt2.txt').mtime.getTime()
-      });
-
+      filesToUpload.should.have.property('/txt3.txt');
+      filesToUpload.should.have.property('/test/txt1.doc');
+      filesToUpload.should.have.property('/test/txt2.txt');
+      Object.keys(filesToUpload).should.have.lengthOf(3);
       done();
     });
   });
