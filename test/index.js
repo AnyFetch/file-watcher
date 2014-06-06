@@ -20,24 +20,20 @@ describe('update() function', function() {
   };
 
   var apiServer;
-  before(function createTestApiServer() {
+  before(function() {
     // Create a fake HTTP server
     apiServer = Anyfetch.debug.createTestApiServer(mockServerHandler);
     apiServer.listen(1338);
   });
 
-  after(function closeTestApiServer(){
+  after(function(){
     apiServer.close();
-  });
-
-  after(function cleanTestFile(){
     // Clean cursor
     try {
       fs.unlinkSync(getCursorPath(path.resolve(__dirname + "/../test/sample-directory")));
     }
     catch(e) {}
   });
-
 
   it('should update account', function(done) {
     update(path.resolve(__dirname + "/../test/sample-directory"), "randomAccessToken", function(err) {
