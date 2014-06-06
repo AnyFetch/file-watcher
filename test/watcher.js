@@ -45,28 +45,26 @@ describe('watcher', function() {
   it('should send file on create', function(done) {
     fs.writeFile(dir + '/file.test', "some content", function() {
       setTimeout(function() {
-          countUploadedFile.should.eql(1);
-          done();
-        }, 7000);
+        countUploadedFile.should.eql(1);
+        done();
+      }, 7000);
     });
   });
 
   it('should send file on update', function(done) {
     fs.writeFile(dir + '/file.test', "some content", function() {
       setTimeout(function() {
-          countUploadedFile.should.eql(2);
-          done();
-        }, 7000);
+        countUploadedFile.should.eql(2);
+        done();
+      }, 7000);
     });
   });
 
   it('should send file on delete', function(done) {
     fs.unlinkSync(dir + '/file.test', "some content");
     setTimeout(function() {
-        countDeletedFile.should.eql(1);
-        done();
-      }, 7000);
+      countDeletedFile.should.eql(1);
+      done();
+    }, 7000);
   });
-
-
 });
