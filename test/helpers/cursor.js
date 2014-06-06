@@ -129,7 +129,7 @@ describe('incrementialSave()', function() {
 
   var dir = __dirname;
 
-  it('should not save firsts files', function(done) {
+  it('should not save at first files', function(done) {
     var file = { "/afile.test": "aRandomDate"};
 
     var cursor = {
@@ -150,7 +150,7 @@ describe('incrementialSave()', function() {
         cb();
       },
       function sendMoreFiles(cb) {
-        for (var i = 0; i < 9; i += 1) {
+        for (var i = 0; i < incrementialSave.size - 1; i += 1) {
           incrementialSave(dir, file, function(){});
         }
         cb();
