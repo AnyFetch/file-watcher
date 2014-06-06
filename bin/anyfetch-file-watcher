@@ -3,12 +3,14 @@
 "use strict";
 
 var fs = require('fs');
+var read = require("read");
 
 var sendToAnyFetch = require('../lib/');
 var watcher = require('../lib/watcher');
 
-if (process.argv.length !== 4) {
-  console.log("You have to provide a directory and an access token");
+
+if (process.argv.length < 3) {
+  console.log("You have to provide a directory");
   process.exit(1);
 }
 
@@ -18,8 +20,19 @@ if (!fs.lstatSync(process.argv[2]).isDirectory()) {
   process.exit(1);
 }
 
-// Check the modifications in the directory at start
-sendToAnyFetch(process.argv[2], process.argv[3], function() {});
+var start = function(dir, token) {
+  // Check the modifications in the directory at start
+  sendToAnyFetch(dir, token, function() {});
 
-// Watch in real time modifications
-watcher(process.argv[2], process.argv[3]);
+  // Watch in real time modifications
+  watcher(dir, token);
+};
+
+if (!process.argv[3]) {
+  read({ prompt: 'Token: ', silent: true }, function(err, token) {
+    start(process.argv[2], token);
+  });
+}
+else {
+  start(process.argv[2], process.argv[3]);
+}

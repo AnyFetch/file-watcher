@@ -21,3 +21,6 @@ libpeerconnection.log
 
 # Jekyll artifacts
 _site/*
+
+# Cursor test files
+*.test
