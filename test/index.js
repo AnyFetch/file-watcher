@@ -7,7 +7,7 @@ var Anyfetch = require('anyfetch');
 var fs = require('fs');
 
 var update = require('../lib/');
-var getSavePath = require('../lib/helpers/save-path').getSavePath;
+var getCursorPath = require('../lib/helpers/cursor').getCursorPath;
 
 
 describe('update() function', function() {
@@ -30,8 +30,10 @@ describe('update() function', function() {
     apiServer.close();
 
     // Clean cursor
-
-    fs.unlinkSync(getSavePath(path.resolve(__dirname + "/../test/sample-directory")));
+    try {
+      fs.unlinkSync(getCursorPath(path.resolve(__dirname + "/../test/sample-directory")));
+    }
+    catch(e) {}
   });
 
   it('should update account', function(done) {

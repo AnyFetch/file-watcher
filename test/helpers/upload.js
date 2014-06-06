@@ -7,7 +7,7 @@ var path = require('path');
 var uploadFile = require('../../lib/helpers/upload').uploadFile;
 var deleteFile = require('../../lib/helpers/upload').deleteFile;
 
-describe('uploadFile', function() {
+describe('API Calls', function() {
 
   process.env.ANYFETCH_API_URL = 'http://localhost:1338';
 

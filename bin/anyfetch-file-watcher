@@ -5,6 +5,7 @@
 var fs = require('fs');
 
 var sendToAnyFetch = require('../lib/');
+var watcher = require('../lib/watcher');
 
 if (process.argv.length !== 4) {
   console.log("You have to provide a directory and an access token");
@@ -17,5 +18,8 @@ if (!fs.lstatSync(process.argv[2]).isDirectory()) {
   process.exit(1);
 }
 
-sendToAnyFetch(process.argv[2], process.argv[3], function() {
-});
+// Check the modifications in the directory at start
+sendToAnyFetch(process.argv[2], process.argv[3], function() {});
+
+// Watch in real time modifications
+watcher(process.argv[2], process.argv[3]);
