@@ -25,7 +25,7 @@ var start = function(dir, token) {
   sendToAnyFetch(dir, token, function() {});
 
   // Watch in real time modifications
-  watcher(process.argv[2], process.argv[3]);
+  watcher(dir, token);
 };
 
 if (!process.argv[3]) {
