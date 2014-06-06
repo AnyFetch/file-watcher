@@ -18,6 +18,8 @@ if (!fs.lstatSync(process.argv[2]).isDirectory()) {
   process.exit(1);
 }
 
+// Check the modifications in the directory at start
 sendToAnyFetch(process.argv[2], process.argv[3], function() {});
 
+// Watch in real time modifications
 watcher(process.argv[2], process.argv[3]);

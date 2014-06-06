@@ -30,8 +30,10 @@ describe('update() function', function() {
     apiServer.close();
 
     // Clean cursor
-
-    fs.unlinkSync(getCursorPath(path.resolve(__dirname + "/../test/sample-directory")));
+    try {
+      fs.unlinkSync(getCursorPath(path.resolve(__dirname + "/../test/sample-directory")));
+    }
+    catch(e) {}
   });
 
   it('should update account', function(done) {

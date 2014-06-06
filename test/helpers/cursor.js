@@ -12,7 +12,7 @@ var getCursor = require('../../lib/helpers/cursor').getCursor;
 var getCursorPath = require('../../lib/helpers/cursor').getCursorPath;
 
 
-describe('getCursor', function() {
+describe('getCursor()', function() {
   var dir = __dirname;
 
   it('should get the cursor', function(done) {
@@ -40,12 +40,15 @@ describe('getCursor', function() {
 
   after(function() {
     // Clean cursor
-    fs.unlinkSync(getCursorPath(dir));
+    try {
+      fs.unlinkSync(getCursorPath(dir));
+    }
+    catch(e) {}
   });
 
 });
 
-describe('addOrUpdateFile', function() {
+describe('addOrUpdateFile()', function() {
   var dir = __dirname;
 
   it('should add the file', function(done) {
@@ -75,12 +78,15 @@ describe('addOrUpdateFile', function() {
 
   after(function() {
     // Clean cursor
-    fs.unlinkSync(getCursorPath(dir));
+    try {
+      fs.unlinkSync(getCursorPath(dir));
+    }
+    catch(e) {}
   });
 
 });
 
-describe('removeFile', function() {
+describe('removeFile()', function() {
 
   var dir = __dirname;
 
@@ -111,6 +117,9 @@ describe('removeFile', function() {
 
   after(function() {
     // Clean cursor
-    fs.unlinkSync(getCursorPath(dir));
+    try {
+      fs.unlinkSync(getCursorPath(dir));
+    }
+    catch(e) {}
   });
 });
