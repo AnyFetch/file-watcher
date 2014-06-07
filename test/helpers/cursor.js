@@ -11,6 +11,7 @@ var saveCursor = require('../../lib/helpers/cursor').saveCursor;
 var getCursor = require('../../lib/helpers/cursor').getCursor;
 var getCursorPath = require('../../lib/helpers/cursor').getCursorPath;
 var incrementialSave = require('../../lib/helpers/cursor').incrementialSave;
+var savePendingFiles = require('../../lib/helpers/cursor').savePendingFiles;
 
 
 describe('getCursor()', function() {
@@ -153,6 +154,50 @@ describe('incrementialSave()', function() {
         for (var i = 0; i < incrementialSave.size - 1; i += 1) {
           incrementialSave(dir, file, function(){});
         }
+        cb();
+      },
+      function checkSave(cb) {
+        incrementialSave.files.length.should.eql(0);
+        cb();
+      }
+    ], done);
+  });
+
+  after(function() {
+    // Clean cursor
+    try {
+      fs.unlinkSync(getCursorPath(dir));
+    }
+    catch(e) {}
+  });
+});
+
+describe('savePendingFiles()', function() {
+
+  var dir = __dirname;
+
+  it('should force save', function(done) {
+    var file = { "/afile.test": "aRandomDate"};
+
+    var cursor = {
+      '/txt1.txt': fs.statSync(__dirname + '/../sample-directory/txt1.txt').mtime.getTime(),
+      '/txt2.txt': fs.statSync(__dirname + '/../sample-directory/txt2.txt').mtime.getTime(),
+      '/test/txt1.doc': fs.statSync(__dirname + '/../sample-directory/test/txt1.doc').mtime.getTime() - 500,
+    };
+
+    async.waterfall([
+      function createCursor(cb) {
+        saveCursor(dir, cursor, cb);
+      },
+      function saveFile(cb) {
+        incrementialSave(dir, file, cb);
+      },
+      function checkNoSave(cb) {
+        incrementialSave.files.length.should.eql(1);
+        cb();
+      },
+      function forceSave(cb) {
+        savePendingFiles(dir);
         cb();
       },
       function checkSave(cb) {
