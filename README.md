@@ -7,7 +7,7 @@ AnyFetch File Watcher
 
 ## Setup
 ```sh
-npm install -g anyfetch-file-watcher
+npm install -g anyfetch-file-watcher --production
 ```
 
 ## Usage
