@@ -7,6 +7,7 @@ var read = require("read");
 
 var sendToAnyFetch = require('../lib/');
 var watcher = require('../lib/watcher');
+var savePendingFiles = require('../lib/helpers/cursor').savePendingFiles;
 
 
 if (process.argv.length < 3) {
@@ -29,10 +30,19 @@ var start = function(dir, token) {
 };
 
 if (!process.argv[3]) {
-  read({ prompt: 'Token: ', silent: true }, function(err, token) {
+  read({prompt: 'Token: ', silent: true}, function(err, token) {
     start(process.argv[2], token);
   });
 }
 else {
   start(process.argv[2], process.argv[3]);
 }
+
+process.on('SIGINT', function() {
+  savePendingFiles(process.argv[2]);
+  process.exit(0);
+});
+process.on('SIGTERM', function() {
+  savePendingFiles(process.argv[2]);
+  process.exit(0);
+});

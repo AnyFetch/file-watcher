@@ -28,7 +28,6 @@ describe('update() function', function() {
 
   after(function(){
     apiServer.close();
-
     // Clean cursor
     try {
       fs.unlinkSync(getCursorPath(path.resolve(__dirname + "/../test/sample-directory")));
