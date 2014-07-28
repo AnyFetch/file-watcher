@@ -5,13 +5,7 @@ require('should');
 var fs = require('fs');
 var async = require('async');
 
-var addOrUpdateFiles = require('../../lib/helpers/cursor').addOrUpdateFiles;
-var removeFiles = require('../../lib/helpers/cursor').removeFiles;
-var saveCursor = require('../../lib/helpers/cursor').saveCursor;
-var getCursor = require('../../lib/helpers/cursor').getCursor;
-var getCursorPath = require('../../lib/helpers/cursor').getCursorPath;
-var incrementialSave = require('../../lib/helpers/cursor').incrementialSave;
-var savePendingFiles = require('../../lib/helpers/cursor').savePendingFiles;
+var cursor = require('../../lib/helpers/cursor');
 
 
 describe('getCursor()', function() {
@@ -28,13 +22,13 @@ describe('getCursor()', function() {
 
     async.waterfall([
       function createCursor(cb) {
-        saveCursor(dir, cursor, cb);
+        cursor.saveCursor(dir, cursor, cb);
       },
       function getUpdate(cb) {
-        getCursor(dir, cb);
+        cursor.getCursor(dir, cb);
       },
       function checkValidity(newCursor, cb) {
-        newCursor.should.eql(cursor);
+        cursor.newCursor.should.eql(cursor);
         cb();
       }
     ], done);
@@ -43,7 +37,7 @@ describe('getCursor()', function() {
   after(function() {
     // Clean cursor
     try {
-      fs.unlinkSync(getCursorPath(dir));
+      fs.unlinkSync(cursor.getCursorPath(dir));
     }
     catch(e) {}
   });
@@ -62,13 +56,13 @@ describe('addOrUpdateFile()', function() {
 
     async.waterfall([
       function createCursor(cb) {
-        saveCursor(dir, cursor, cb);
+        cursor.saveCursor(dir, cursor, cb);
       },
       function addFile(cb) {
-        addOrUpdateFiles(dir, {"/afile.txt": "aRandomDate"}, cb);
+        cursor.addOrUpdateFiles(dir, {"/afile.txt": "aRandomDate"}, cb);
       },
       function getNewCursor(cb) {
-        getCursor(dir, cb);
+        cursor.getCursor(dir, cb);
       },
       function checkCursor(newCursor, cb) {
         cursor['/afile.txt'] = "aRandomDate";
@@ -81,7 +75,7 @@ describe('addOrUpdateFile()', function() {
   after(function() {
     // Clean cursor
     try {
-      fs.unlinkSync(getCursorPath(dir));
+      fs.unlinkSync(cursor.getCursorPath(dir));
     }
     catch(e) {}
   });
@@ -101,13 +95,13 @@ describe('removeFile()', function() {
 
     async.waterfall([
       function createCursor(cb) {
-        saveCursor(dir, cursor, cb);
+        cursor.saveCursor(dir, cursor, cb);
       },
       function removeAFile(cb) {
-        removeFiles(dir, ["/txt1.txt"], cb);
+        cursor.removeFiles(dir, ["/txt1.txt"], cb);
       },
       function getNewCursor(cb) {
-        getCursor(dir, cb);
+        cursor.getCursor(dir, cb);
       },
       function checkCursor(newCursor, cb) {
         delete cursor['/txt1.txt'];
@@ -120,7 +114,7 @@ describe('removeFile()', function() {
   after(function() {
     // Clean cursor
     try {
-      fs.unlinkSync(getCursorPath(dir));
+      fs.unlinkSync(cursor.getCursorPath(dir));
     }
     catch(e) {}
   });
@@ -141,23 +135,23 @@ describe('incrementialSave()', function() {
 
     async.waterfall([
       function createCursor(cb) {
-        saveCursor(dir, cursor, cb);
+        cursor.saveCursor(dir, cursor, cb);
       },
       function saveFile(cb) {
-        incrementialSave(dir, file, cb);
+        cursor.incrementialSave(dir, file, cb);
       },
       function checkNoSave(cb) {
-        incrementialSave.files.length.should.eql(1);
+        cursor.incrementialSave.files.length.should.eql(1);
         cb();
       },
       function sendMoreFiles(cb) {
-        for (var i = 0; i < incrementialSave.size - 1; i += 1) {
-          incrementialSave(dir, file, function(){});
+        for (var i = 0; i < cursor.incrementialSave.size - 1; i += 1) {
+          cursor.incrementialSave(dir, file, function(){});
         }
         cb();
       },
       function checkSave(cb) {
-        incrementialSave.files.length.should.eql(0);
+        cursor.incrementialSave.files.length.should.eql(0);
         cb();
       }
     ], done);
@@ -166,7 +160,7 @@ describe('incrementialSave()', function() {
   after(function() {
     // Clean cursor
     try {
-      fs.unlinkSync(getCursorPath(dir));
+      fs.unlinkSync(cursor.getCursorPath(dir));
     }
     catch(e) {}
   });
@@ -187,21 +181,21 @@ describe('savePendingFiles()', function() {
 
     async.waterfall([
       function createCursor(cb) {
-        saveCursor(dir, cursor, cb);
+        cursor.saveCursor(dir, cursor, cb);
       },
       function saveFile(cb) {
-        incrementialSave(dir, file, cb);
+        cursor.incrementialSave(dir, file, cb);
       },
       function checkNoSave(cb) {
-        incrementialSave.files.length.should.eql(1);
+        cursor.incrementialSave.files.length.should.eql(1);
         cb();
       },
       function forceSave(cb) {
-        savePendingFiles(dir);
+        cursor.savePendingFiles(dir);
         cb();
       },
       function checkSave(cb) {
-        incrementialSave.files.length.should.eql(0);
+        cursor.incrementialSave.files.length.should.eql(0);
         cb();
       }
     ], done);
@@ -210,7 +204,7 @@ describe('savePendingFiles()', function() {
   after(function() {
     // Clean cursor
     try {
-      fs.unlinkSync(getCursorPath(dir));
+      fs.unlinkSync(cursor.getCursorPath(dir));
     }
     catch(e) {}
   });

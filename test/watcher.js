@@ -13,7 +13,8 @@ describe('watcher', function() {
   var dir = __dirname;
   watcher(dir, "randomToken");
 
-  process.env.ANYFETCH_API_URL = 'http://localhost:1338';
+  var port = 1338;
+  var apiUrl = 'http://localhost:' + port;
 
   var countUploadedFile = 0;
   var countDeletedFile = 0;
@@ -30,8 +31,10 @@ describe('watcher', function() {
 
   before(function() {
     // Create a fake HTTP server
-    apiServer = Anyfetch.debug.createTestApiServer(mockServerHandler);
-    apiServer.listen(1338);
+    apiServer = Anyfetch.createMockServer(mockServerHandler);
+    apiServer.listen(port, function() {
+      Anyfetch.setApiUrl(apiUrl);
+    });
   });
 
   after(function(){
