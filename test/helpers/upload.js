@@ -13,10 +13,10 @@ describe('API Calls', function() {
   var apiUrl = 'http://localhost:' + port;
 
   var countUploadedDocumendAndFile = 0;
-  var countDeletedDocument = 0;
+  var uploadDocumentAndFile = 0;
 
   var deleteDocument = function(req, res ,next){
-    countDeletedDocument += 1;
+    uploadDocumentAndFile += 1;
     res.send(204);
     next();
   };
@@ -56,7 +56,7 @@ describe('API Calls', function() {
       if(err) {
         throw err;
       }
-      countDeletedDocument.should.eql(1);
+      uploadDocumentAndFile.should.eql(1);
       done();
     });
   });
