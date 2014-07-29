@@ -12,17 +12,17 @@ describe('API Calls', function() {
   var port = 1338;
   var apiUrl = 'http://localhost:' + port;
 
-  var countUploadedFile = 0;
-  var countDeletedFile = 0;
+  var countUploadedDocumendAndFile = 0;
+  var countDeletedDocument = 0;
 
   var deleteDocument = function(req, res ,next){
-    countDeletedFile += 1;
-    res.send(200);
+    countDeletedDocument += 1;
+    res.send(204);
     next();
   };
-  var uploadDocument = function(req, res ,next){
-    countUploadedFile += 1;
-    res.send(200);
+  var uploadFileMock = function(req, res ,next){
+    countUploadedDocumendAndFile += 1;
+    res.send(204);
     next();
   };
   var apiServer;
@@ -30,8 +30,8 @@ describe('API Calls', function() {
   before(function() {
     // Create a fake HTTP server
     apiServer = Anyfetch.createMockServer();
-    apiServer.override("delete", "/documents", deleteDocument);
-    apiServer.override("post", "/documents", uploadDocument);
+    apiServer.override("delete", "/documents/identifier/:identifier", deleteDocument);
+    apiServer.override("post", "/documents/:id/file", uploadFileMock);
     apiServer.listen(port, function() {
       Anyfetch.setApiUrl(apiUrl);
     });
@@ -42,26 +42,22 @@ describe('API Calls', function() {
   });
 
   it('should upload the file', function(done) {
-
     uploadFile(path.resolve(__dirname + "/.."), "/sample-directory/txt1.txt", "randomAccessToken", "randomBaseIdentifier", "RandomDate", function(err) {
       if(err) {
         throw err;
       }
-      countUploadedFile.should.eql(1);
+      countUploadedDocumendAndFile.should.eql(1);
       done();
     });
-
   });
 
-  it('should delete the file', function(done) {
-
+  it('should delete the document', function(done) {
     deleteFile("/sample-directory/txt1.txt", "randomAccessToken", "randomBaseIdentifier", function(err) {
       if(err) {
         throw err;
       }
-      countDeletedFile.should.eql(1);
+      countDeletedDocument.should.eql(1);
       done();
     });
-
   });
 });

@@ -19,7 +19,7 @@ describe('update() function', function() {
   var countFile = 0;
   var uploadFile = function(req, res ,next){
     countFile += 1;
-    res.send(200);
+    res.send(204);
     next();
   };
 
@@ -27,7 +27,7 @@ describe('update() function', function() {
   before(function() {
     // Create a fake HTTP server
     apiServer = Anyfetch.createMockServer();
-    apiServer.override("post", "/documents", uploadFile);
+    apiServer.override("post", "/documents/:id/file", uploadFile);
     apiServer.listen(port, function() {
       Anyfetch.setApiUrl(apiUrl);
     });

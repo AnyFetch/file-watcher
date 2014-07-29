@@ -21,12 +21,12 @@ describe('watcher', function() {
 
   var deleteDocument = function(req, res ,next){
     countDeletedFile += 1;
-    res.send(200);
+    res.send(204);
     next();
   };
-  var uploadDocument = function(req, res ,next){
+  var uploadDocumentAndFile = function(req, res ,next){
     countUploadedFile += 1;
-    res.send(200);
+    res.send(204);
     next();
   };
 
@@ -35,8 +35,8 @@ describe('watcher', function() {
   before(function() {
     // Create a fake HTTP server
     apiServer = Anyfetch.createMockServer();
-    apiServer.override("delete", "/documents", deleteDocument);
-    apiServer.override("post", "/documents", uploadDocument);
+    apiServer.override("delete", "/documents/identifier/:identifier", deleteDocument);
+    apiServer.override("post", "/documents/:id/file", uploadDocumentAndFile);
     apiServer.listen(port, function() {
       Anyfetch.setApiUrl(apiUrl);
     });
