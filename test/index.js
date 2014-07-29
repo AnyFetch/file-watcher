@@ -17,16 +17,17 @@ describe('update() function', function() {
 
 
   var countFile = 0;
-  var mockServerHandler = function(url){
-    if (url.indexOf("/file") !== -1) {
-      countFile += 1;
-    }
+  var uploadFile = function(req, res ,next){
+    countFile += 1;
+    res.send(200);
+    next();
   };
 
   var apiServer;
   before(function() {
     // Create a fake HTTP server
-    apiServer = Anyfetch.createMockServer(mockServerHandler);
+    apiServer = Anyfetch.createMockServer();
+    apiServer.override("post", "/documents", uploadFile);
     apiServer.listen(port, function() {
       Anyfetch.setApiUrl(apiUrl);
     });

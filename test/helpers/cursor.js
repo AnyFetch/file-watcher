@@ -13,7 +13,7 @@ describe('getCursor()', function() {
 
   it('should get the cursor', function(done) {
 
-    var cursor = {
+    var fakeCursor = {
       '/txt1.txt': fs.statSync(__dirname + '/../sample-directory/txt1.txt').mtime.getTime(),
       '/txt2.txt': fs.statSync(__dirname + '/../sample-directory/txt2.txt').mtime.getTime(),
       '/test/txt1.doc': fs.statSync(__dirname + '/../sample-directory/test/txt1.doc').mtime.getTime() - 500,
@@ -22,13 +22,13 @@ describe('getCursor()', function() {
 
     async.waterfall([
       function createCursor(cb) {
-        cursor.saveCursor(dir, cursor, cb);
+        cursor.saveCursor(dir, fakeCursor, cb);
       },
       function getUpdate(cb) {
         cursor.getCursor(dir, cb);
       },
       function checkValidity(newCursor, cb) {
-        cursor.newCursor.should.eql(cursor);
+        newCursor.should.eql(fakeCursor);
         cb();
       }
     ], done);
@@ -48,7 +48,7 @@ describe('addOrUpdateFile()', function() {
   var dir = __dirname;
 
   it('should add the file', function(done) {
-    var cursor = {
+    var fakeCursor = {
       '/txt1.txt': fs.statSync(__dirname + '/../sample-directory/txt1.txt').mtime.getTime(),
       '/txt2.txt': fs.statSync(__dirname + '/../sample-directory/txt2.txt').mtime.getTime(),
       '/test/txt1.doc': fs.statSync(__dirname + '/../sample-directory/test/txt1.doc').mtime.getTime() - 500,
@@ -56,7 +56,7 @@ describe('addOrUpdateFile()', function() {
 
     async.waterfall([
       function createCursor(cb) {
-        cursor.saveCursor(dir, cursor, cb);
+        cursor.saveCursor(dir, fakeCursor, cb);
       },
       function addFile(cb) {
         cursor.addOrUpdateFiles(dir, {"/afile.txt": "aRandomDate"}, cb);
@@ -65,8 +65,8 @@ describe('addOrUpdateFile()', function() {
         cursor.getCursor(dir, cb);
       },
       function checkCursor(newCursor, cb) {
-        cursor['/afile.txt'] = "aRandomDate";
-        newCursor.should.eql(cursor);
+        fakeCursor['/afile.txt'] = "aRandomDate";
+        newCursor.should.eql(fakeCursor);
         cb();
       }
     ], done);
@@ -87,7 +87,7 @@ describe('removeFile()', function() {
   var dir = __dirname;
 
   it('should add the file', function(done) {
-    var cursor = {
+    var fakeCursor = {
       '/txt1.txt': fs.statSync(__dirname + '/../sample-directory/txt1.txt').mtime.getTime(),
       '/txt2.txt': fs.statSync(__dirname + '/../sample-directory/txt2.txt').mtime.getTime(),
       '/test/txt1.doc': fs.statSync(__dirname + '/../sample-directory/test/txt1.doc').mtime.getTime() - 500,
@@ -95,7 +95,7 @@ describe('removeFile()', function() {
 
     async.waterfall([
       function createCursor(cb) {
-        cursor.saveCursor(dir, cursor, cb);
+        cursor.saveCursor(dir, fakeCursor, cb);
       },
       function removeAFile(cb) {
         cursor.removeFiles(dir, ["/txt1.txt"], cb);
@@ -104,8 +104,8 @@ describe('removeFile()', function() {
         cursor.getCursor(dir, cb);
       },
       function checkCursor(newCursor, cb) {
-        delete cursor['/txt1.txt'];
-        newCursor.should.eql(cursor);
+        delete fakeCursor['/txt1.txt'];
+        newCursor.should.eql(fakeCursor);
         cb();
       }
     ], done);
@@ -127,7 +127,7 @@ describe('incrementialSave()', function() {
   it('should not save at first files', function(done) {
     var file = { "/afile.test": "aRandomDate"};
 
-    var cursor = {
+    var fakeCursor = {
       '/txt1.txt': fs.statSync(__dirname + '/../sample-directory/txt1.txt').mtime.getTime(),
       '/txt2.txt': fs.statSync(__dirname + '/../sample-directory/txt2.txt').mtime.getTime(),
       '/test/txt1.doc': fs.statSync(__dirname + '/../sample-directory/test/txt1.doc').mtime.getTime() - 500,
@@ -135,7 +135,7 @@ describe('incrementialSave()', function() {
 
     async.waterfall([
       function createCursor(cb) {
-        cursor.saveCursor(dir, cursor, cb);
+        cursor.saveCursor(dir, fakeCursor, cb);
       },
       function saveFile(cb) {
         cursor.incrementialSave(dir, file, cb);
@@ -173,7 +173,7 @@ describe('savePendingFiles()', function() {
   it('should force save', function(done) {
     var file = { "/afile.test": "aRandomDate"};
 
-    var cursor = {
+    var fakeCursor = {
       '/txt1.txt': fs.statSync(__dirname + '/../sample-directory/txt1.txt').mtime.getTime(),
       '/txt2.txt': fs.statSync(__dirname + '/../sample-directory/txt2.txt').mtime.getTime(),
       '/test/txt1.doc': fs.statSync(__dirname + '/../sample-directory/test/txt1.doc').mtime.getTime() - 500,
@@ -181,7 +181,7 @@ describe('savePendingFiles()', function() {
 
     async.waterfall([
       function createCursor(cb) {
-        cursor.saveCursor(dir, cursor, cb);
+        cursor.saveCursor(dir, fakeCursor, cb);
       },
       function saveFile(cb) {
         cursor.incrementialSave(dir, file, cb);

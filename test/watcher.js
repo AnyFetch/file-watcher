@@ -19,19 +19,24 @@ describe('watcher', function() {
   var countUploadedFile = 0;
   var countDeletedFile = 0;
 
-  var mockServerHandler = function(url){
-    if(url.indexOf("/file") !== -1) {
-      countUploadedFile += 1;
-    }
-    if(url.indexOf("/file") === -1 && url.indexOf("/identifier") !== -1){
-      countDeletedFile += 1;
-    }
+  var deleteDocument = function(req, res ,next){
+    countDeletedFile += 1;
+    res.send(200);
+    next();
   };
+  var uploadDocument = function(req, res ,next){
+    countUploadedFile += 1;
+    res.send(200);
+    next();
+  };
+
   var apiServer;
 
   before(function() {
     // Create a fake HTTP server
-    apiServer = Anyfetch.createMockServer(mockServerHandler);
+    apiServer = Anyfetch.createMockServer();
+    apiServer.override("delete", "/documents", deleteDocument);
+    apiServer.override("post", "/documents", uploadDocument);
     apiServer.listen(port, function() {
       Anyfetch.setApiUrl(apiUrl);
     });
