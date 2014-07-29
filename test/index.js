@@ -11,19 +11,26 @@ var getCursorPath = require('../lib/helpers/cursor').getCursorPath;
 
 
 describe('update() function', function() {
-  process.env.ANYFETCH_API_URL = 'http://localhost:1338';
+
+  var port = 1338;
+  var apiUrl = 'http://localhost:' + port;
+
   var countFile = 0;
-  var mockServerHandler = function(url){
-    if (url.indexOf("/file") !== -1) {
-      countFile += 1;
-    }
+  var uploadFile = function(req, res ,next){
+    countFile += 1;
+    res.send(204);
+    next();
   };
 
   var apiServer;
   before(function() {
     // Create a fake HTTP server
-    apiServer = Anyfetch.debug.createTestApiServer(mockServerHandler);
-    apiServer.listen(1338);
+    apiServer = Anyfetch.createMockServer();
+    apiServer.override("post", "/documents/:id/file", uploadFile);
+    apiServer.listen(port, function() {
+      Anyfetch.setApiUrl(apiUrl);
+    });
+
   });
 
   after(function(){

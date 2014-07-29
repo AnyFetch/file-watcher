@@ -13,25 +13,33 @@ describe('watcher', function() {
   var dir = __dirname;
   watcher(dir, "randomToken");
 
-  process.env.ANYFETCH_API_URL = 'http://localhost:1338';
+  var port = 1338;
+  var apiUrl = 'http://localhost:' + port;
 
   var countUploadedFile = 0;
   var countDeletedFile = 0;
 
-  var mockServerHandler = function(url){
-    if(url.indexOf("/file") !== -1) {
-      countUploadedFile += 1;
-    }
-    if(url.indexOf("/file") === -1 && url.indexOf("/identifier") !== -1){
-      countDeletedFile += 1;
-    }
+  var deleteDocument = function(req, res ,next){
+    countDeletedFile += 1;
+    res.send(204);
+    next();
   };
+  var uploadDocumentAndFile = function(req, res ,next){
+    countUploadedFile += 1;
+    res.send(204);
+    next();
+  };
+
   var apiServer;
 
   before(function() {
     // Create a fake HTTP server
-    apiServer = Anyfetch.debug.createTestApiServer(mockServerHandler);
-    apiServer.listen(1338);
+    apiServer = Anyfetch.createMockServer();
+    apiServer.override("delete", "/documents/identifier/:identifier", deleteDocument);
+    apiServer.override("post", "/documents/:id/file", uploadDocumentAndFile);
+    apiServer.listen(port, function() {
+      Anyfetch.setApiUrl(apiUrl);
+    });
   });
 
   after(function(){

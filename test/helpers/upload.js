@@ -9,25 +9,32 @@ var deleteFile = require('../../lib/helpers/upload').deleteFile;
 
 describe('API Calls', function() {
 
-  process.env.ANYFETCH_API_URL = 'http://localhost:1338';
+  var port = 1338;
+  var apiUrl = 'http://localhost:' + port;
 
-  var countUploadedFile = 0;
-  var countDeletedFile = 0;
+  var countUploadedDocumendAndFile = 0;
+  var uploadDocumentAndFile = 0;
 
-  var mockServerHandler = function(url){
-    if(url.indexOf("/file") !== -1) {
-      countUploadedFile += 1;
-    }
-    if(url.indexOf("/file") === -1 && url.indexOf("/identifier") !== -1){
-      countDeletedFile += 1;
-    }
+  var deleteDocument = function(req, res ,next){
+    uploadDocumentAndFile += 1;
+    res.send(204);
+    next();
+  };
+  var uploadFileMock = function(req, res ,next){
+    countUploadedDocumendAndFile += 1;
+    res.send(204);
+    next();
   };
   var apiServer;
 
   before(function() {
     // Create a fake HTTP server
-    apiServer = Anyfetch.debug.createTestApiServer(mockServerHandler);
-    apiServer.listen(1338);
+    apiServer = Anyfetch.createMockServer();
+    apiServer.override("delete", "/documents/identifier/:identifier", deleteDocument);
+    apiServer.override("post", "/documents/:id/file", uploadFileMock);
+    apiServer.listen(port, function() {
+      Anyfetch.setApiUrl(apiUrl);
+    });
   });
 
   after(function(){
@@ -35,26 +42,22 @@ describe('API Calls', function() {
   });
 
   it('should upload the file', function(done) {
-
     uploadFile(path.resolve(__dirname + "/.."), "/sample-directory/txt1.txt", "randomAccessToken", "randomBaseIdentifier", "RandomDate", function(err) {
       if(err) {
         throw err;
       }
-      countUploadedFile.should.eql(1);
+      countUploadedDocumendAndFile.should.eql(1);
       done();
     });
-
   });
 
-  it('should delete the file', function(done) {
-
+  it('should delete the document', function(done) {
     deleteFile("/sample-directory/txt1.txt", "randomAccessToken", "randomBaseIdentifier", function(err) {
       if(err) {
         throw err;
       }
-      countDeletedFile.should.eql(1);
+      uploadDocumentAndFile.should.eql(1);
       done();
     });
-
   });
 });
