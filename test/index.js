@@ -2,9 +2,9 @@
 
 require('should');
 
-var fs = require('fs');
 var path = require('path');
 var Anyfetch = require('anyfetch');
+var fs = require('fs');
 
 var update = require('../lib/');
 var getCursorPath = require('../lib/helpers/cursor').getCursorPath;
@@ -14,7 +14,6 @@ describe('update() function', function() {
 
   var port = 1338;
   var apiUrl = 'http://localhost:' + port;
-
 
   var countFile = 0;
   var uploadFile = function(req, res ,next){
@@ -31,6 +30,7 @@ describe('update() function', function() {
     apiServer.listen(port, function() {
       Anyfetch.setApiUrl(apiUrl);
     });
+
   });
 
   after(function(){

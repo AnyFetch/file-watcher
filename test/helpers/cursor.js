@@ -7,7 +7,6 @@ var async = require('async');
 
 var cursor = require('../../lib/helpers/cursor');
 
-
 describe('getCursor()', function() {
   var dir = __dirname;
 
