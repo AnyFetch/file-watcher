@@ -2,20 +2,16 @@
 
 require('should');
 
-var fs = require('fs');
 var path = require('path');
 var Anyfetch = require('anyfetch');
+var fs = require('fs');
 
 var update = require('../lib/');
 var getCursorPath = require('../lib/helpers/cursor').getCursorPath;
 
 
 describe('update() function', function() {
-
-  var port = 1338;
-  var apiUrl = 'http://localhost:' + port;
-
-
+  process.env.ANYFETCH_API_URL = 'http://localhost:1338';
   var countFile = 0;
   var mockServerHandler = function(url){
     if (url.indexOf("/file") !== -1) {
@@ -26,10 +22,8 @@ describe('update() function', function() {
   var apiServer;
   before(function() {
     // Create a fake HTTP server
-    apiServer = Anyfetch.createMockServer(mockServerHandler);
-    apiServer.listen(port, function() {
-      Anyfetch.setApiUrl(apiUrl);
-    });
+    apiServer = Anyfetch.debug.createTestApiServer(mockServerHandler);
+    apiServer.listen(1338);
   });
 
   after(function(){
