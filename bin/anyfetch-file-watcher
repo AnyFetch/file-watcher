@@ -4,11 +4,9 @@
 
 var fs = require('fs');
 var read = require("read");
-
-var sendToAnyFetch = require('../lib/');
-var watcher = require('../lib/watcher');
 var savePendingFiles = require('../lib/helpers/cursor').savePendingFiles;
 
+var start = require('../lib');
 
 if (process.argv.length < 3) {
   console.log("You have to provide a directory");
@@ -21,21 +19,14 @@ if (!fs.lstatSync(process.argv[2]).isDirectory()) {
   process.exit(1);
 }
 
-var start = function(dir, token) {
-  // Check the modifications in the directory at start
-  sendToAnyFetch(dir, token, function() {});
-
-  // Watch in real time modifications
-  watcher(dir, token);
-};
 
 if (!process.argv[3]) {
   read({prompt: 'Token: ', silent: true}, function(err, token) {
-    start(process.argv[2], token);
+    start(process.argv[2], token, function() {});
   });
 }
 else {
-  start(process.argv[2], process.argv[3]);
+  start(process.argv[2], process.argv[3], function() {});
 }
 
 process.on('SIGINT', function() {
