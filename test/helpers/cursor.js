@@ -146,8 +146,10 @@ describe('incrementialSave()', function() {
       function sendMoreFiles(cb) {
         var count = 0;
         async.whilst(
-          function () { return count < cursor.incrementialSave.size - 1; },
-          function (cb) {
+          function() {
+            return count < cursor.incrementialSave.size - 1;
+          },
+          function(cb) {
             count += 1;
             cursor.incrementialSave(dir, file, cursor.ADD, cb);
           },

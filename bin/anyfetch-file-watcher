@@ -9,13 +9,13 @@ var savePendingFiles = require('../lib/helpers/cursor').savePendingFiles;
 var start = require('../lib');
 
 if (process.argv.length < 3) {
-  console.log("You have to provide a directory");
+  console.warn("You have to provide a directory");
   process.exit(1);
 }
 
 // Is it a directory?
 if (!fs.lstatSync(process.argv[2]).isDirectory()) {
-  console.log("The directory provided is invalid");
+  console.warn("The directory provided is invalid");
   process.exit(1);
 }
 
