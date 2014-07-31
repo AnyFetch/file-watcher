@@ -137,17 +137,24 @@ describe('incrementialSave()', function() {
         cursor.saveCursor(dir, fakeCursor, cb);
       },
       function saveFile(cb) {
-        cursor.incrementialSave(dir, file, cb);
+        cursor.incrementialSave(dir, file, cursor.ADD, cb);
       },
       function checkNoSave(cb) {
         cursor.incrementialSave.files.length.should.eql(1);
         cb();
       },
       function sendMoreFiles(cb) {
-        for (var i = 0; i < cursor.incrementialSave.size - 1; i += 1) {
-          cursor.incrementialSave(dir, file, function(){});
-        }
-        cb();
+        var count = 0;
+        async.whilst(
+          function() {
+            return count < cursor.incrementialSave.size - 1;
+          },
+          function(cb) {
+            count += 1;
+            cursor.incrementialSave(dir, file, cursor.ADD, cb);
+          },
+          cb
+        );
       },
       function checkSave(cb) {
         cursor.incrementialSave.files.length.should.eql(0);
@@ -183,7 +190,7 @@ describe('savePendingFiles()', function() {
         cursor.saveCursor(dir, fakeCursor, cb);
       },
       function saveFile(cb) {
-        cursor.incrementialSave(dir, file, cb);
+        cursor.incrementialSave(dir, file, cursor.ADD, cb);
       },
       function checkNoSave(cb) {
         cursor.incrementialSave.files.length.should.eql(1);

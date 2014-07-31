@@ -52,7 +52,7 @@ describe('API Calls', function() {
   });
 
   it('should delete the document', function(done) {
-    deleteFile("/sample-directory/txt1.txt", "randomAccessToken", "randomBaseIdentifier", function(err) {
+    deleteFile(path.resolve(__dirname + "/.."), "/sample-directory/txt1.txt", "randomAccessToken", "randomBaseIdentifier", function(err) {
       if(err) {
         throw err;
       }
