@@ -8,10 +8,14 @@ var listFiles = require('../../lib/helpers/list-files');
 var getCursorFromDirectory = listFiles.getCursorFromDirectory;
 var retrieveFiles = listFiles.retrieveFiles;
 
+var cursor = require('../../lib/helpers/cursor');
+
 
 describe("getCursorFromDirectory()", function() {
   it("should list the files inside the sample directory", function(done) {
-    getCursorFromDirectory(path.resolve("test/sample-directory"), function(err, res) {
+    GLOBAL.WATCHED_DIR = path.resolve("test/sample-directory");
+
+    getCursorFromDirectory(function(err, res) {
       if(err) {
         throw err;
       }
@@ -28,12 +32,14 @@ describe("getCursorFromDirectory()", function() {
 
 describe("Retrieve file", function () {
   it("should return the new file that are updated", function(done) {
+    GLOBAL.WATCHED_DIR = path.resolve("test/sample-directory");
+
     var cursor = {
       '/txt1.txt': fs.statSync(__dirname + '/../sample-directory/txt1.txt').mtime.getTime(),
       '/txt2.txt': fs.statSync(__dirname + '/../sample-directory/txt2.txt').mtime.getTime(),
       '/test/txt1.doc': fs.statSync(__dirname + '/../sample-directory/test/txt1.doc').mtime.getTime() - 500,
     };
-    retrieveFiles(path.resolve("test/sample-directory"), cursor, function(err, filesToUpload) {
+    retrieveFiles(cursor, function(err, filesToUpload) {
       if(err) {
         throw err;
       }
