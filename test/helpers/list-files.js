@@ -8,8 +8,6 @@ var listFiles = require('../../lib/helpers/list-files');
 var getCursorFromDirectory = listFiles.getCursorFromDirectory;
 var retrieveFiles = listFiles.retrieveFiles;
 
-var cursor = require('../../lib/helpers/cursor');
-
 
 describe("getCursorFromDirectory()", function() {
   it("should list the files inside the sample directory", function(done) {
