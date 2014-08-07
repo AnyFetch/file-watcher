@@ -6,11 +6,13 @@ var path = require('path');
 var Anyfetch = require('anyfetch');
 var fs = require('fs');
 
-var update = require('../lib/');
+var sendToAnyFetch = require('../lib/').sendToAnyFetch;
 var getCursorPath = require('../lib/helpers/cursor').getCursorPath;
 
 
-describe('update() function', function() {
+describe('sendToAnyFetch() function', function() {
+
+  GLOBAL.WATCHER_DIR = path.resolve(__dirname + "/../test/sample-directory");
 
   var port = 1338;
   var apiUrl = 'http://localhost:' + port;
@@ -30,20 +32,19 @@ describe('update() function', function() {
     apiServer.listen(port, function() {
       Anyfetch.setApiUrl(apiUrl);
     });
-
   });
 
   after(function(){
     apiServer.close();
     // Clean cursor
     try {
-      fs.unlinkSync(getCursorPath(path.resolve(__dirname + "/../test/sample-directory")));
+      fs.unlinkSync(getCursorPath());
     }
     catch(e) {}
   });
 
   it('should update account', function(done) {
-    update(path.resolve(__dirname + "/../test/sample-directory"), "randomAccessToken", function(err) {
+    sendToAnyFetch("randomAccessToken", function(err) {
       if(err) {
         throw err;
       }
