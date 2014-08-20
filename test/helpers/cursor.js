@@ -58,11 +58,13 @@ describe('addOrUpdateFile()', function() {
     async.waterfall([
       function createCursor(cb) {
         cursor.saveCursor(fakeCursor, cb);
+        console.log('cursor saved');
       },
       function addFile(cb) {
         cursor.addOrUpdateFiles({"/afile.txt": "aRandomDate"}, cb);
       },
       function getNewCursor(cb) {
+        console.log("checking cursor for test");
         cursor.getCursor(cb);
       },
       function checkCursor(newCursor, cb) {

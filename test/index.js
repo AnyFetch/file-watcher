@@ -44,6 +44,7 @@ describe('sendToAnyFetch() function', function() {
   });
 
   it('should update account', function(done) {
+    console.log(GLOBAL.WATCHER_DIR)
     sendToAnyFetch("randomAccessToken", function(err) {
       if(err) {
         throw err;
@@ -51,7 +52,7 @@ describe('sendToAnyFetch() function', function() {
       setTimeout(function() {
         countFile.should.eql(5);
         done();
-      }, 200);
+      }, 300);
     });
 
   });
