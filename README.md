@@ -18,8 +18,10 @@ anyfetch-file-watcher $DIRECTORY_TO_WATCH $ACCESS_TOKEN
 ```
 
 The command is long running, and will watch for file changes until the process dies.
-
 > You can omit the `$ACCESS_TOKEN` and enter it interactively.
+
+### Environment variables
+You can define a BULK_SAVE variable to modify the number of files to save in the cursor at the same time. Default: 20
 
 ## Reset
 Every time you run this command, a JSON file is stored in `~/.anyfetch-file-watcher/$STRIPPED_DIRECTORY.json` with cursor details. If you want to resend everything, remove this file.
