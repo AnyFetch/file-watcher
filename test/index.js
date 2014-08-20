@@ -51,7 +51,7 @@ describe('sendToAnyFetch() function', function() {
       setTimeout(function() {
         countFile.should.eql(5);
         done();
-      }, 200);
+      }, 300);
     });
 
   });

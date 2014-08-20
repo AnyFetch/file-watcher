@@ -40,6 +40,7 @@ describe('API Calls', function() {
   });
 
   after(function(){
+    require("../../lib/helpers/cursor.js").savePendingFiles();
     apiServer.close();
   });
 
