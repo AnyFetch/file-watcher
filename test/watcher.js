@@ -6,10 +6,12 @@ var fs = require('fs');
 var Anyfetch = require('anyfetch');
 
 var watcher = require('../lib/watcher');
+var init = require('../lib/').init;
 
 
 describe('watcher', function() {
-  GLOBAL.WATCHED_DIR = __dirname;
+  init("randomAccessToken", __dirname, "test");
+
   watcher("randomToken");
 
   var port = 1338;
@@ -41,6 +43,10 @@ describe('watcher', function() {
     });
   });
 
+  beforeEach(function() {
+    init("randomAccessToken", __dirname, "test");
+  });
+
   after(function(){
     apiServer.close();
   });
@@ -53,7 +59,7 @@ describe('watcher', function() {
     catch(e) {}
   });
 
-  it('should send file on create', function(done) {
+  it('should send file on creation', function(done) {
     fs.writeFile(GLOBAL.WATCHED_DIR + '/file.test', "some content", function() {
       function checkHydration() {
         if(countUploadedFile === 1) {
@@ -83,7 +89,7 @@ describe('watcher', function() {
     });
   });
 
-  it('should send file on delete', function(done) {
+  it('should delete file on deletions', function(done) {
     fs.unlinkSync(GLOBAL.WATCHED_DIR + '/file.test', "some content");
     function checkHydration() {
       if(countDeletedFile === 1) {

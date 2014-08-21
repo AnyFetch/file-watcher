@@ -6,11 +6,9 @@ var path = require('path');
 
 var uploadFile = require('../../lib/helpers/upload').uploadFile;
 var deleteFile = require('../../lib/helpers/upload').deleteFile;
+var init = require('../../lib/index.js').init;
 
 describe('API Calls', function() {
-
-  GLOBAL.WATCHED_DIR = path.resolve(__dirname + "/..");
-
   var port = 1338;
   var apiUrl = 'http://localhost:' + port;
 
@@ -45,7 +43,9 @@ describe('API Calls', function() {
   });
 
   it('should upload the file', function(done) {
-    uploadFile("/txt1.txt", "randomAccessToken", "randomBaseIdentifier", "RandomDate", function(err) {
+    init("randomAccessToken", path.resolve(__dirname + "../../sample-directory"), "test");
+
+    uploadFile("/txt1.txt", "randomBaseIdentifier", "RandomDate", function(err) {
       if(err) {
         throw err;
       }
@@ -55,7 +55,9 @@ describe('API Calls', function() {
   });
 
   it('should delete the document', function(done) {
-    deleteFile("/txt1.txt", "randomAccessToken", "randomBaseIdentifier", function(err) {
+    init("randomAccessToken", path.resolve(__dirname + "../../sample-directory"), "test");
+
+    deleteFile("/txt1.txt", "randomBaseIdentifier", function(err) {
       if(err) {
         throw err;
       }

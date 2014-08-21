@@ -8,20 +8,17 @@ var async = require('async');
 
 var cursor = require('../../lib/helpers/cursor');
 var files = require('../../lib/helpers/file');
-var getCursorPath = require('../../lib/index.js').getCursorPath;
+var init = require('../../lib/index.js').init;
 
 describe("Cursor", function() {
-
-  GLOBAL.WATCHED_DIR = __dirname;
-  GLOBAL.CURSOR_PATH = getCursorPath();
-
   describe('addOrUpdateFile()', function() {
-
     it('should add the file', function(done) {
+      init("randomAccessToken", __dirname, "test");
+
       GLOBAL.CURSOR = {
-        '/txt1.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt1.txt')).mtime.getTime(),
-        '/txt2.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt2.txt')).mtime.getTime(),
-        '/test/txt1.doc': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/test/txt1.doc')).mtime.getTime() - 500,
+        '/txt1.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/../sample-directory/txt1.txt')).mtime.getTime(),
+        '/txt2.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/../sample-directory/txt2.txt')).mtime.getTime(),
+        '/test/txt1.doc': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/../sample-directory/test/txt1.doc')).mtime.getTime() - 500,
       };
       cursor.addOrUpdateFiles({"/afile.txt": "aRandomDate"});
 
@@ -41,14 +38,13 @@ describe("Cursor", function() {
   });
 
   describe('removeFile()', function() {
-
-    GLOBAL.WATCHED_DIR = __dirname;
+    init("randomAccessToken", __dirname, "test");
 
     it('should remove the file', function(done) {
       GLOBAL.CURSOR = {
-        '/txt1.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt1.txt')).mtime.getTime(),
-        '/txt2.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt2.txt')).mtime.getTime(),
-        '/test/txt1.doc': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/test/txt1.doc')).mtime.getTime() - 500,
+        '/txt1.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/../sample-directory/txt1.txt')).mtime.getTime(),
+        '/txt2.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/../sample-directory/txt2.txt')).mtime.getTime(),
+        '/test/txt1.doc': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/../sample-directory/test/txt1.doc')).mtime.getTime() - 500,
       };
 
       cursor.removeFiles(["/txt1.txt"]);
@@ -67,8 +63,7 @@ describe("Cursor", function() {
   });
 
   describe.skip('incrementialSave()', function() {
-
-    GLOBAL.WATCHED_DIR = __dirname;
+    init("randomAccessToken", __dirname, "test");
 
     it('should not save at first files', function(done) {
       var file = { "/afile.test": "aRandomDate"};
@@ -121,7 +116,7 @@ describe("Cursor", function() {
 
   describe.skip('savePendingFiles()', function() {
 
-    GLOBAL.WATCHED_DIR = __dirname;
+    init("randomAccessToken", __dirname, "test");
 
     it('should force save', function(done) {
       var file = { "/afile.test": "aRandomDate"};

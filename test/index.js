@@ -7,13 +7,9 @@ var Anyfetch = require('anyfetch');
 var fs = require('fs');
 
 var sendToAnyFetch = require('../lib/').sendToAnyFetch;
-var getCursorPath = require('../lib/').getCursorPath;
+var init = require('../lib/').init;
 
 describe('sendToAnyFetch() function', function() {
-
-  GLOBAL.WATCHER_DIR = path.resolve(__dirname + "/../test/sample-directory");
-  GLOBAL.CURSOR_PATH = getCursorPath();
-
   var port = 1338;
   var apiUrl = 'http://localhost:' + port;
 
@@ -26,6 +22,11 @@ describe('sendToAnyFetch() function', function() {
 
   var apiServer;
   before(function() {
+    // Clean cursor
+    try {
+      fs.unlinkSync(GLOBAL.CURSOR_PATH);
+    }
+    catch(e) {}
     // Create a fake HTTP server
     apiServer = Anyfetch.createMockServer();
     apiServer.override("post", "/documents/:id/file", uploadFile);
@@ -44,7 +45,10 @@ describe('sendToAnyFetch() function', function() {
   });
 
   it('should update account', function(done) {
-    sendToAnyFetch("randomAccessToken", function(err) {
+
+    init("randomAccessToken", path.resolve(__dirname + "../../test/sample-directory"), "test");
+
+    sendToAnyFetch(function(err) {
       if(err) {
         throw err;
       }
