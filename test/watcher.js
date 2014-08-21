@@ -6,8 +6,6 @@ var fs = require('fs');
 var Anyfetch = require('anyfetch');
 
 var watcher = require('../lib/watcher');
-var cursor = require('../lib/helpers/cursor');
-var getCursorPath = cursor.getCursorPath;
 
 
 describe('watcher', function() {
@@ -50,7 +48,7 @@ describe('watcher', function() {
   after(function() {
     // Clean cursor
     try {
-      fs.unlinkSync(getCursorPath());
+      fs.unlinkSync(GLOBAL.CURSOR_PATH);
     }
     catch(e) {}
   });

@@ -7,213 +7,183 @@ var path = require('path');
 var async = require('async');
 
 var cursor = require('../../lib/helpers/cursor');
+var files = require('../../lib/helpers/file');
+var getCursorPath = require('../../lib/index.js').getCursorPath;
 
-
-describe('getCursor()', function() {
-  GLOBAL.WATCHED_DIR = __dirname;
-
-  it('should get the cursor', function(done) {
-
-    var fakeCursor = {
-      '/txt1.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt1.txt')).mtime.getTime(),
-      '/txt2.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt2.txt')).mtime.getTime(),
-      '/test/txt1.doc': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/test/txt1.doc')).mtime.getTime() - 500,
-    };
-
-
-    async.waterfall([
-      function createCursor(cb) {
-        cursor.saveCursor(fakeCursor, cb);
-      },
-      function getUpdate(cb) {
-        cursor.getCursor(cb);
-      },
-      function checkValidity(newCursor, cb) {
-        newCursor.should.eql(fakeCursor);
-        cb();
-      }
-    ], done);
-  });
-
-  after(function() {
-    // Clean cursor
-    try {
-      fs.unlinkSync(cursor.getCursorPath());
-    }
-    catch(e) {}
-  });
-
-});
-
-describe('addOrUpdateFile()', function() {
-  GLOBAL.WATCHED_DIR = __dirname;
-
-  it('should add the file', function(done) {
-    var fakeCursor = {
-      '/txt1.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt1.txt')).mtime.getTime(),
-      '/txt2.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt2.txt')).mtime.getTime(),
-      '/test/txt1.doc': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/test/txt1.doc')).mtime.getTime() - 500,
-    };
-
-    async.waterfall([
-      function createCursor(cb) {
-        cursor.saveCursor(fakeCursor, cb);
-      },
-      function addFile(cb) {
-        cursor.addOrUpdateFiles({"/afile.txt": "aRandomDate"}, cb);
-      },
-      function getNewCursor(cb) {
-        cursor.getCursor(cb);
-      },
-      function checkCursor(newCursor, cb) {
-        fakeCursor['/afile.txt'] = "aRandomDate";
-        newCursor.should.eql(fakeCursor);
-        cb();
-      }
-    ], done);
-  });
-
-  after(function() {
-    // Clean cursor
-    try {
-      fs.unlinkSync(cursor.getCursorPath());
-    }
-    catch(e) {}
-  });
-
-});
-
-describe('removeFile()', function() {
+describe("Cursor", function() {
 
   GLOBAL.WATCHED_DIR = __dirname;
+  GLOBAL.CURSOR_PATH = getCursorPath();
 
-  it('should add the file', function(done) {
-    var fakeCursor = {
-      '/txt1.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt1.txt')).mtime.getTime(),
-      '/txt2.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt2.txt')).mtime.getTime(),
-      '/test/txt1.doc': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/test/txt1.doc')).mtime.getTime() - 500,
-    };
+  describe('addOrUpdateFile()', function() {
 
-    async.waterfall([
-      function createCursor(cb) {
-        cursor.saveCursor(fakeCursor, cb);
-      },
-      function removeAFile(cb) {
-        cursor.removeFiles(["/txt1.txt"], cb);
-      },
-      function getNewCursor(cb) {
-        cursor.getCursor(cb);
-      },
-      function checkCursor(newCursor, cb) {
-        delete fakeCursor['/txt1.txt'];
-        newCursor.should.eql(fakeCursor);
-        cb();
+    it('should add the file', function(done) {
+      var fakeCursor = {
+        '/txt1.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt1.txt')).mtime.getTime(),
+        '/txt2.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt2.txt')).mtime.getTime(),
+        '/test/txt1.doc': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/test/txt1.doc')).mtime.getTime() - 500,
+      };
+
+      async.waterfall([
+        function createCursor(cb) {
+          files.save(fakeCursor, cb);
+        },
+        function addFile(cb) {
+          cursor.addOrUpdateFiles({"/afile.txt": "aRandomDate"}, cb);
+        },
+        function getNewCursor(cb) {
+          files.load(cb);
+        },
+        function checkCursor(newCursor, cb) {
+          fakeCursor['/afile.txt'] = "aRandomDate";
+          newCursor.should.eql(fakeCursor);
+          cb();
+        }
+      ], done);
+    });
+
+    after(function() {
+      // Clean cursor
+      try {
+        fs.unlinkSync(GLOBAL.CURSOR_PATH);
       }
-    ], done);
+      catch(e) {}
+    });
+
   });
 
-  after(function() {
-    // Clean cursor
-    try {
-      fs.unlinkSync(cursor.getCursorPath());
-    }
-    catch(e) {}
-  });
-});
+  describe('removeFile()', function() {
 
-describe('incrementialSave()', function() {
+    GLOBAL.WATCHED_DIR = __dirname;
 
-  GLOBAL.WATCHED_DIR = __dirname;
+    it('should add the file', function(done) {
+      var fakeCursor = {
+        '/txt1.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt1.txt')).mtime.getTime(),
+        '/txt2.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt2.txt')).mtime.getTime(),
+        '/test/txt1.doc': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/test/txt1.doc')).mtime.getTime() - 500,
+      };
 
-  it('should not save at first files', function(done) {
-    var file = { "/afile.test": "aRandomDate"};
+      async.waterfall([
+        function createCursor(cb) {
+          files.save(fakeCursor, cb);
+        },
+        function removeAFile(cb) {
+          cursor.removeFiles(["/txt1.txt"], cb);
+        },
+        function getNewCursor(cb) {
+          files.load(cb);
+        },
+        function checkCursor(newCursor, cb) {
+          delete fakeCursor['/txt1.txt'];
+          newCursor.should.eql(fakeCursor);
+          cb();
+        }
+      ], done);
+    });
 
-    var fakeCursor = {
-      '/txt1.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt1.txt')).mtime.getTime(),
-      '/txt2.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt2.txt')).mtime.getTime(),
-      '/test/txt1.doc': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/test/txt1.doc')).mtime.getTime() - 500,
-    };
-
-    async.waterfall([
-      function createCursor(cb) {
-        cursor.saveCursor(fakeCursor, cb);
-      },
-      function saveFile(cb) {
-        cursor.incrementialSave(file, cursor.ADD, cb);
-      },
-      function checkNoSave(cb) {
-        cursor.incrementialSave.files.length.should.eql(1);
-        cb();
-      },
-      function sendMoreFiles(cb) {
-        var count = 0;
-        async.whilst(
-          function() {
-            return count < cursor.incrementialSave.size - 1;
-          },
-          function(cb) {
-            count += 1;
-            cursor.incrementialSave(file, cursor.ADD, cb);
-          },
-          cb
-        );
-      },
-      function checkSave(cb) {
-        cursor.incrementialSave.files.length.should.eql(0);
-        cb();
+    after(function() {
+      // Clean cursor
+      try {
+        fs.unlinkSync(GLOBAL.CURSOR_PATH);
       }
-    ], done);
+      catch(e) {}
+    });
   });
 
-  after(function() {
-    // Clean cursor
-    try {
-      fs.unlinkSync(cursor.getCursorPath());
-    }
-    catch(e) {}
-  });
-});
+  describe('incrementialSave()', function() {
 
-describe('savePendingFiles()', function() {
+    GLOBAL.WATCHED_DIR = __dirname;
 
-  GLOBAL.WATCHED_DIR = __dirname;
+    it('should not save at first files', function(done) {
+      var file = { "/afile.test": "aRandomDate"};
 
-  it('should force save', function(done) {
-    var file = { "/afile.test": "aRandomDate"};
+      var fakeCursor = {
+        '/txt1.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt1.txt')).mtime.getTime(),
+        '/txt2.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt2.txt')).mtime.getTime(),
+        '/test/txt1.doc': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/test/txt1.doc')).mtime.getTime() - 500,
+      };
 
-    var fakeCursor = {
-      '/txt1.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt1.txt')).mtime.getTime(),
-      '/txt2.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt2.txt')).mtime.getTime(),
-      '/test/txt1.doc': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/test/txt1.doc')).mtime.getTime() - 500,
-    };
+      async.waterfall([
+        function createCursor(cb) {
+          files.save(fakeCursor, cb);
+        },
+        function saveFile(cb) {
+          cursor.incrementialSave(file, cursor.ADD, cb);
+        },
+        function checkNoSave(cb) {
+          cursor.incrementialSave.files.length.should.eql(1);
+          cb();
+        },
+        function sendMoreFiles(cb) {
+          var count = 0;
+          async.whilst(
+            function() {
+              return count < cursor.incrementialSave.size - 1;
+            },
+            function(cb) {
+              count += 1;
+              cursor.incrementialSave(file, cursor.ADD, cb);
+            },
+            cb
+          );
+        },
+        function checkSave(cb) {
+          cursor.incrementialSave.files.length.should.eql(0);
+          cb();
+        }
+      ], done);
+    });
 
-    async.waterfall([
-      function createCursor(cb) {
-        cursor.saveCursor(fakeCursor, cb);
-      },
-      function saveFile(cb) {
-        cursor.incrementialSave(file, cursor.ADD, cb);
-      },
-      function checkNoSave(cb) {
-        cursor.incrementialSave.files.length.should.eql(1);
-        cb();
-      },
-      function forceSave(cb) {
-        cursor.savePendingFiles();
-        cb();
-      },
-      function checkSave(cb) {
-        cursor.incrementialSave.files.length.should.eql(0);
-        cb();
+    after(function() {
+      // Clean cursor
+      try {
+        fs.unlinkSync(GLOBAL.CURSOR_PATH);
       }
-    ], done);
+      catch(e) {}
+    });
   });
 
-  after(function() {
-    // Clean cursor
-    try {
-      fs.unlinkSync(cursor.getCursorPath());
-    }
-    catch(e) {}
+  describe('savePendingFiles()', function() {
+
+    GLOBAL.WATCHED_DIR = __dirname;
+
+    it('should force save', function(done) {
+      var file = { "/afile.test": "aRandomDate"};
+
+      var fakeCursor = {
+        '/txt1.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt1.txt')).mtime.getTime(),
+        '/txt2.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt2.txt')).mtime.getTime(),
+        '/test/txt1.doc': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/test/txt1.doc')).mtime.getTime() - 500,
+      };
+
+      async.waterfall([
+        function createCursor(cb) {
+          files.save(fakeCursor, cb);
+        },
+        function saveFile(cb) {
+          cursor.incrementialSave(file, cursor.ADD, cb);
+        },
+        function checkNoSave(cb) {
+          cursor.incrementialSave.files.length.should.eql(1);
+          cb();
+        },
+        function forceSave(cb) {
+          cursor.savePendingFiles();
+          cb();
+        },
+        function checkSave(cb) {
+          cursor.incrementialSave.files.length.should.eql(0);
+          cb();
+        }
+      ], done);
+    });
+
+    after(function() {
+      // Clean cursor
+      try {
+        fs.unlinkSync(GLOBAL.CURSOR_PATH);
+      }
+      catch(e) {}
+    });
   });
 });

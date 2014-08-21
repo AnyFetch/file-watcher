@@ -7,7 +7,6 @@ var Anyfetch = require('anyfetch');
 var fs = require('fs');
 
 var sendToAnyFetch = require('../lib/').sendToAnyFetch;
-var getCursorPath = require('../lib/helpers/cursor').getCursorPath;
 
 
 describe('sendToAnyFetch() function', function() {
@@ -38,7 +37,7 @@ describe('sendToAnyFetch() function', function() {
     apiServer.close();
     // Clean cursor
     try {
-      fs.unlinkSync(getCursorPath());
+      fs.unlinkSync(GLOBAL.CURSOR_PATH);
     }
     catch(e) {}
   });
