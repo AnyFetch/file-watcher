@@ -7,11 +7,12 @@ var Anyfetch = require('anyfetch');
 var fs = require('fs');
 
 var sendToAnyFetch = require('../lib/').sendToAnyFetch;
-
+var getCursorPath = require('../lib/').getCursorPath;
 
 describe('sendToAnyFetch() function', function() {
 
   GLOBAL.WATCHER_DIR = path.resolve(__dirname + "/../test/sample-directory");
+  GLOBAL.CURSOR_PATH = getCursorPath();
 
   var port = 1338;
   var apiUrl = 'http://localhost:' + port;

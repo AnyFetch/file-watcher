@@ -18,16 +18,18 @@ describe('file.js', function() {
       '/test/txt1.doc': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/test/txt1.doc')).mtime.getTime() - 500,
     };
 
+    GLOBAL.CURSOR = JSON.stringify(fakeCursor);
+    GLOBAL.CURSOR = JSON.parse(GLOBAL.CURSOR);
 
     async.waterfall([
       function createCursor(cb) {
-        file.save(fakeCursor, cb);
+        file.save(cb);
       },
       function getUpdate(cb) {
         file.load(cb);
       },
-      function checkValidity(newCursor, cb) {
-        newCursor.should.eql(fakeCursor);
+      function checkValidity(cb) {
+        fakeCursor.should.eql(GLOBAL.CURSOR);
         cb();
       }
     ], done);
@@ -36,7 +38,7 @@ describe('file.js', function() {
   after(function() {
     // Clean cursor
     try {
-      fs.unlinkSync(file.getCursorPath());
+      fs.unlinkSync(GLOBAL.CURSOR_PATH);
     }
     catch(e) {}
   });

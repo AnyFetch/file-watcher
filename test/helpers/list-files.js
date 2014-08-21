@@ -7,22 +7,24 @@ var path = require("path");
 var listFiles = require('../../lib/helpers/list-files');
 var getCursorFromDirectory = listFiles.getCursorFromDirectory;
 var retrieveFiles = listFiles.retrieveFiles;
+var getCursorPath = require('../../lib/').getCursorPath;
+
 
 
 describe("getCursorFromDirectory()", function() {
   it("should list the files inside the sample directory", function(done) {
-    GLOBAL.WATCHED_DIR = path.resolve("test/sample-directory");
-
-    getCursorFromDirectory(function(err, res) {
+    GLOBAL.WATCHED_DIR = path.resolve(__dirname + "../../../test/sample-directory");
+    GLOBAL.CURSOR_PATH = getCursorPath();
+    getCursorFromDirectory(function(err, cursor) {
       if(err) {
         throw err;
       }
-      Object.keys(res).should.include('/txt1.txt');
-      Object.keys(res).should.include('/txt2.txt');
-      Object.keys(res).should.include('/txt3.txt');
-      Object.keys(res).should.include('/test/txt1.doc');
-      Object.keys(res).should.include('/test/txt2.txt');
-      Object.keys(res).should.have.lengthOf(5);
+      Object.keys(cursor).should.include('/txt1.txt');
+      Object.keys(cursor).should.include('/txt2.txt');
+      Object.keys(cursor).should.include('/txt3.txt');
+      Object.keys(cursor).should.include('/test/txt1.doc');
+      Object.keys(cursor).should.include('/test/txt2.txt');
+      Object.keys(cursor).should.have.lengthOf(5);
       done();
     });
   });
@@ -31,13 +33,15 @@ describe("getCursorFromDirectory()", function() {
 describe("Retrieve file", function () {
   it("should return the new file that are updated", function(done) {
     GLOBAL.WATCHED_DIR = path.resolve("test/sample-directory");
+    GLOBAL.CURSOR_PATH = getCursorPath();
 
-    var cursor = {
+    GLOBAL.CURSOR = {
       '/txt1.txt': fs.statSync(__dirname + '/../sample-directory/txt1.txt').mtime.getTime(),
       '/txt2.txt': fs.statSync(__dirname + '/../sample-directory/txt2.txt').mtime.getTime(),
       '/test/txt1.doc': fs.statSync(__dirname + '/../sample-directory/test/txt1.doc').mtime.getTime() - 500,
     };
-    retrieveFiles(cursor, function(err, filesToUpload) {
+
+    retrieveFiles(function(err, filesToUpload) {
       if(err) {
         throw err;
       }
