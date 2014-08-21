@@ -10,10 +10,20 @@ var cursor = require('../../lib/helpers/cursor');
 var init = require('../../lib/index.js').init;
 
 describe("Cursor", function() {
+  beforeEach(function() {
+    init("randomAccessToken", __dirname, "test");
+  });
+
+  after(function() {
+    // Clean cursor
+    try {
+      fs.unlinkSync(GLOBAL.CURSOR_PATH);
+    }
+    catch(e) {}
+  });
+
   describe('addOrUpdateFile()', function() {
     it('should add the file', function(done) {
-      init("randomAccessToken", __dirname, "test");
-
       GLOBAL.CURSOR = {
         '/txt1.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/../sample-directory/txt1.txt')).mtime.getTime(),
         '/txt2.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/../sample-directory/txt2.txt')).mtime.getTime(),
@@ -37,8 +47,6 @@ describe("Cursor", function() {
   });
 
   describe('removeFile()', function() {
-    init("randomAccessToken", __dirname, "test");
-
     it('should remove the file', function(done) {
       GLOBAL.CURSOR = {
         '/txt1.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/../sample-directory/txt1.txt')).mtime.getTime(),
@@ -52,18 +60,9 @@ describe("Cursor", function() {
       done();
     });
 
-    after(function() {
-      // Clean cursor
-      try {
-        fs.unlinkSync(GLOBAL.CURSOR_PATH);
-      }
-      catch(e) {}
-    });
   });
 
   describe('incrementialSave()', function() {
-    init("randomAccessToken", __dirname, "test");
-
     it('should not save at first files', function(done) {
       async.waterfall([
         function callIncrementialSave(cb) {
@@ -91,14 +90,6 @@ describe("Cursor", function() {
           cb();
         }
       ], done);
-    });
-
-    after(function() {
-      // Clean cursor
-      try {
-        fs.unlinkSync(GLOBAL.CURSOR_PATH);
-      }
-      catch(e) {}
     });
   });
 });

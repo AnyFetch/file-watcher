@@ -22,6 +22,7 @@ describe('sendToAnyFetch() function', function() {
 
   var apiServer;
   before(function() {
+    init("randomAccessToken", path.resolve(__dirname + "../../test/sample-directory"), "test");
     // Clean cursor
     try {
       fs.unlinkSync(GLOBAL.CURSOR_PATH);
@@ -45,9 +46,6 @@ describe('sendToAnyFetch() function', function() {
   });
 
   it('should update account', function(done) {
-
-    init("randomAccessToken", path.resolve(__dirname + "../../test/sample-directory"), "test");
-
     sendToAnyFetch(function(err) {
       if(err) {
         throw err;

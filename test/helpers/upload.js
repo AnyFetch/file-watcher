@@ -28,6 +28,7 @@ describe('API Calls', function() {
   var apiServer;
 
   before(function() {
+    init("randomAccessToken", path.resolve(__dirname + "../../sample-directory"), "test");
     // Create a fake HTTP server
     apiServer = Anyfetch.createMockServer();
     apiServer.override("delete", "/documents/identifier/:identifier", deleteDocument);
@@ -43,8 +44,6 @@ describe('API Calls', function() {
   });
 
   it('should upload the file', function(done) {
-    init("randomAccessToken", path.resolve(__dirname + "../../sample-directory"), "test");
-
     uploadFile("/txt1.txt", "randomBaseIdentifier", "RandomDate", function(err) {
       if(err) {
         throw err;
@@ -55,8 +54,6 @@ describe('API Calls', function() {
   });
 
   it('should delete the document', function(done) {
-    init("randomAccessToken", path.resolve(__dirname + "../../sample-directory"), "test");
-
     deleteFile("/txt1.txt", "randomBaseIdentifier", function(err) {
       if(err) {
         throw err;

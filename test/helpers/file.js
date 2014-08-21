@@ -13,12 +13,13 @@ describe('file.js', function() {
 
   it('should get the cursor', function(done) {
     init("randomAccessToken", __dirname, "test");
+
     var fakeCursor = {
       '/txt1.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/../sample-directory/txt1.txt')).mtime.getTime(),
       '/txt2.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/../sample-directory/txt2.txt')).mtime.getTime(),
       '/test/txt1.doc': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/../sample-directory/test/txt1.doc')).mtime.getTime() - 500,
     };
-
+    // trick to copy initial value
     GLOBAL.CURSOR = JSON.stringify(fakeCursor);
     GLOBAL.CURSOR = JSON.parse(GLOBAL.CURSOR);
 
@@ -27,7 +28,6 @@ describe('file.js', function() {
         file.save(cb);
       },
       function getUpdate(cb) {
-        //console.log(cb)
         file.load(cb);
       },
       function checkValidity(cb) {
