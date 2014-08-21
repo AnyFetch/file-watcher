@@ -27,6 +27,7 @@ describe('file.js', function() {
         file.save(cb);
       },
       function getUpdate(cb) {
+        //console.log(cb)
         file.load(cb);
       },
       function checkValidity(cb) {

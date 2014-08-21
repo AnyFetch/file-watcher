@@ -38,7 +38,7 @@ describe('API Calls', function() {
   });
 
   after(function(){
-    require("../../lib/helpers/cursor.js").savePendingFiles();
+    require("../../lib/helpers/file.js").saveSync();
     apiServer.close();
   });
 

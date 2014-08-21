@@ -7,7 +7,6 @@ var path = require('path');
 var async = require('async');
 
 var cursor = require('../../lib/helpers/cursor');
-var files = require('../../lib/helpers/file');
 var init = require('../../lib/index.js').init;
 
 describe("Cursor", function() {
@@ -62,27 +61,16 @@ describe("Cursor", function() {
     });
   });
 
-  describe.skip('incrementialSave()', function() {
+  describe('incrementialSave()', function() {
     init("randomAccessToken", __dirname, "test");
 
     it('should not save at first files', function(done) {
-      var file = { "/afile.test": "aRandomDate"};
-
-      GLOBAL.CURSOR = {
-        '/txt1.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt1.txt')).mtime.getTime(),
-        '/txt2.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt2.txt')).mtime.getTime(),
-        '/test/txt1.doc': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/test/txt1.doc')).mtime.getTime() - 500,
-      };
-
       async.waterfall([
-        function createCursor(cb) {
-          files.save(cb);
-        },
-        function saveFile(cb) {
-          cursor.incrementialSave(file, cursor.ADD, cb);
+        function callIncrementialSave(cb) {
+          cursor.incrementialSave(cb);
         },
         function checkNoSave(cb) {
-          cursor.incrementialSave.files.length.should.eql(1);
+          cursor.incrementialSave.count.should.eql(1);
           cb();
         },
         function sendMoreFiles(cb) {
@@ -93,57 +81,13 @@ describe("Cursor", function() {
             },
             function(cb) {
               count += 1;
-              cursor.incrementialSave(file, cursor.ADD, cb);
+              cursor.incrementialSave(cb);
             },
             cb
           );
         },
         function checkSave(cb) {
-          cursor.incrementialSave.files.length.should.eql(0);
-          cb();
-        }
-      ], done);
-    });
-
-    after(function() {
-      // Clean cursor
-      try {
-        fs.unlinkSync(GLOBAL.CURSOR_PATH);
-      }
-      catch(e) {}
-    });
-  });
-
-  describe.skip('savePendingFiles()', function() {
-
-    init("randomAccessToken", __dirname, "test");
-
-    it('should force save', function(done) {
-      var file = { "/afile.test": "aRandomDate"};
-
-      var fakeCursor = {
-        '/txt1.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt1.txt')).mtime.getTime(),
-        '/txt2.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/txt2.txt')).mtime.getTime(),
-        '/test/txt1.doc': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/sample-directory/test/txt1.doc')).mtime.getTime() - 500,
-      };
-
-      async.waterfall([
-        function createCursor(cb) {
-          files.save(fakeCursor, cb);
-        },
-        function saveFile(cb) {
-          cursor.incrementialSave(file, cursor.ADD, cb);
-        },
-        function checkNoSave(cb) {
-          cursor.incrementialSave.files.length.should.eql(1);
-          cb();
-        },
-        function forceSave(cb) {
-          cursor.savePendingFiles();
-          cb();
-        },
-        function checkSave(cb) {
-          cursor.incrementialSave.files.length.should.eql(0);
+          cursor.incrementialSave.count.should.eql(0);
           cb();
         }
       ], done);
