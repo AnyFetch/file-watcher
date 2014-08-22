@@ -1,19 +1,13 @@
 'use strict';
 
 require('should');
-
-var path = require('path');
 var Anyfetch = require('anyfetch');
-var fs = require('fs');
+var path = require('path');
 
-var sendToAnyFetch = require('../lib/').sendToAnyFetch;
-var getCursorPath = require('../lib/helpers/cursor').getCursorPath;
+var sendNewOrUpdatedFiles = require('../lib/').sendNewOrUpdatedFiles;
+var init = require('./init');
 
-
-describe('sendToAnyFetch() function', function() {
-
-  GLOBAL.WATCHER_DIR = path.resolve(__dirname + "/../test/sample-directory");
-
+describe('sendNewOrUpdatedFiles() function', function() {
   var port = 1338;
   var apiUrl = 'http://localhost:' + port;
 
@@ -25,26 +19,22 @@ describe('sendToAnyFetch() function', function() {
   };
 
   var apiServer;
-  before(function() {
-    // Create a fake HTTP server
+  before(function(done) {
     apiServer = Anyfetch.createMockServer();
     apiServer.override("post", "/documents/:id/file", uploadFile);
     apiServer.listen(port, function() {
       Anyfetch.setApiUrl(apiUrl);
     });
+    init("randomAccessToken", path.resolve(__dirname + "../../test/sample-directory"),  done);
   });
 
-  after(function(){
+  after(function(done){
     apiServer.close();
-    // Clean cursor
-    try {
-      fs.unlinkSync(getCursorPath());
-    }
-    catch(e) {}
+    init.clean(done);
   });
 
   it('should update account', function(done) {
-    sendToAnyFetch("randomAccessToken", function(err) {
+    sendNewOrUpdatedFiles(function(err) {
       if(err) {
         throw err;
       }

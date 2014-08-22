@@ -6,13 +6,11 @@ var fs = require('fs');
 var Anyfetch = require('anyfetch');
 
 var watcher = require('../lib/watcher');
-var cursor = require('../lib/helpers/cursor');
-var getCursorPath = cursor.getCursorPath;
+var init = require('./init');
 
 
 describe('watcher', function() {
-  GLOBAL.WATCHED_DIR = __dirname;
-  watcher("randomToken");
+  init("randomAccessToken", __dirname, watcher);
 
   var port = 1338;
   var apiUrl = 'http://localhost:' + port;
@@ -43,19 +41,16 @@ describe('watcher', function() {
     });
   });
 
-  after(function(){
+  beforeEach(function(done) {
+    init("randomAccessToken", __dirname, done);
+  });
+
+  after(function(done){
     apiServer.close();
+    init.clean(done);
   });
 
-  after(function() {
-    // Clean cursor
-    try {
-      fs.unlinkSync(getCursorPath());
-    }
-    catch(e) {}
-  });
-
-  it('should send file on create', function(done) {
+  it('should send file on creation', function(done) {
     fs.writeFile(GLOBAL.WATCHED_DIR + '/file.test', "some content", function() {
       function checkHydration() {
         if(countUploadedFile === 1) {
@@ -85,7 +80,7 @@ describe('watcher', function() {
     });
   });
 
-  it('should send file on delete', function(done) {
+  it('should delete file on deletions', function(done) {
     fs.unlinkSync(GLOBAL.WATCHED_DIR + '/file.test', "some content");
     function checkHydration() {
       if(countDeletedFile === 1) {

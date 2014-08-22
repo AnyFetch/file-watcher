@@ -4,9 +4,9 @@
 
 var fs = require('fs');
 var read = require("read");
-var savePendingFiles = require('../lib/helpers/cursor').savePendingFiles;
+var async = require("async");
 
-var start = require('../lib');
+var filewatcher = require('../lib');
 
 if (process.argv.length < 3) {
   console.warn("You have to provide a directory");
@@ -19,21 +19,26 @@ if (!fs.lstatSync(process.argv[2]).isDirectory()) {
   process.exit(1);
 }
 
-
-if (!process.argv[3]) {
-  read({prompt: 'Token: ', silent: true}, function(err, token) {
-    start(process.argv[2], token, function() {});
-  });
-}
-else {
-  start(process.argv[2], process.argv[3], function() {});
-}
-
-process.on('SIGINT', function() {
-  savePendingFiles(process.argv[2]);
-  process.exit(0);
-});
-process.on('SIGTERM', function() {
-  savePendingFiles(process.argv[2]);
-  process.exit(0);
+async.waterfall([
+  function populateVariables(cb) {
+    if (!process.argv[3]) {
+      read({prompt: 'Token: ', silent: true}, function(err, token) {
+        filewatcher(process.argv[3], token, cb);
+      });
+    }
+    else {
+      filewatcher(process.argv[3], process.argv[2], cb);
+    }
+  },
+  function sendFiles(cb) {
+    filewatcher.sendNewOrUpdatedFiles(cb);
+  },
+  function watchFiles(cb) {
+    filewatcher.watch();
+    cb();
+  }
+], function(err) {
+  if(err){
+    throw err;
+  }
 });
