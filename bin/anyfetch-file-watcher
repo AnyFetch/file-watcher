@@ -37,4 +37,8 @@ async.waterfall([
     filewatcher.watch();
     cb();
   }
-]);
+], function(err) {
+  if(err){
+    throw err;
+  }
+});
