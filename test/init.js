@@ -2,7 +2,14 @@
 
 var async = require("async");
 var fs = require("fs");
-var file = require('../lib/helpers/file.js');
+var save = require('../lib/helpers/save.js');
+
+var clean = function(cb) {
+  fs.unlink(GLOBAL.CURSOR_PATH, function() {
+    // Skip errors
+    cb();
+  });
+};
 
 module.exports = function initialization(accessToken, dir, cb) {
   async.waterfall([
@@ -16,20 +23,12 @@ module.exports = function initialization(accessToken, dir, cb) {
       }
       GLOBAL.CURSOR_PATH = homeDir + "/.anyfetch-file-watcher/" + GLOBAL.WATCHED_DIR.trim().replace(/(\/|\\)/g, '') + '-' + GLOBAL.ACCOUNT;
       GLOBAL.ACCOUNT = "test";
-      file.load(cb);
+      save.load(cb);
     },
-    function cleanCursorcb(cb) {
-      fs.unlink(GLOBAL.CURSOR_PATH, function() {
-        // Skip errors
-        cb();
-      });
+    function cleanCursor(cb) {
+      clean(cb);
     }
   ], cb);
 };
 
-module.exports.clean = function(cb) {
-  fs.unlink(GLOBAL.CURSOR_PATH, function() {
-    // Skip errors
-    cb();
-  });
-};
+module.exports.clean = clean;

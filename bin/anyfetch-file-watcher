@@ -31,7 +31,7 @@ async.waterfall([
     }
   },
   function sendFiles(cb) {
-    filewatcher.sendToAnyFetch(cb);
+    filewatcher.sendNewOrUpdatedFiles(cb);
   },
   function watchFiles(cb) {
     filewatcher.watch();

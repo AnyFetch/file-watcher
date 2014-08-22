@@ -7,6 +7,7 @@ var path = require('path');
 var uploadFile = require('../../lib/helpers/upload').uploadFile;
 var deleteFile = require('../../lib/helpers/upload').deleteFile;
 var init = require('../init');
+var save = require("../../lib/helpers/save");
 
 describe('API Calls', function() {
   var port = 1338;
@@ -39,7 +40,7 @@ describe('API Calls', function() {
   });
 
   after(function(done){
-    require("../../lib/helpers/file.js").saveSync();
+    save.saveSync();
     apiServer.close();
     init.clean(done);
   });

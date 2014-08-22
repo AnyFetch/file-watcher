@@ -1,14 +1,13 @@
 'use strict';
 
 require('should');
-
-var path = require('path');
 var Anyfetch = require('anyfetch');
+var path = require('path');
 
-var sendToAnyFetch = require('../lib/').sendToAnyFetch;
+var sendNewOrUpdatedFiles = require('../lib/').sendNewOrUpdatedFiles;
 var init = require('./init');
 
-describe('sendToAnyFetch() function', function() {
+describe('sendNewOrUpdatedFiles() function', function() {
   var port = 1338;
   var apiUrl = 'http://localhost:' + port;
 
@@ -35,7 +34,7 @@ describe('sendToAnyFetch() function', function() {
   });
 
   it('should update account', function(done) {
-    sendToAnyFetch(function(err) {
+    sendNewOrUpdatedFiles(function(err) {
       if(err) {
         throw err;
       }
