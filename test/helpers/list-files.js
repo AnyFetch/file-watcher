@@ -7,17 +7,15 @@ var path = require("path");
 var listFiles = require('../../lib/helpers/list-files');
 var getCursorFromDirectory = listFiles.getCursorFromDirectory;
 var retrieveFiles = listFiles.retrieveFiles;
-var init = require('../../lib/').init;
+var init = require('../init');
 
 describe('list-files', function() {
-  beforeEach(function() {
-    init("randomAccessToken", path.resolve(__dirname + "../../../test/sample-directory"), "test");
+  beforeEach(function(done) {
+    init("randomAccessToken", path.resolve(__dirname + "../../../test/sample-directory"), done);
   });
 
   describe("getCursorFromDirectory()", function() {
     it("should list the files inside the sample directory", function(done) {
-
-
       getCursorFromDirectory(function(err, cursor) {
         if(err) {
           throw err;

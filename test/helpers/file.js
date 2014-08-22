@@ -6,13 +6,20 @@ var async = require("async");
 var path = require("path");
 
 var file = require('../../lib/helpers/file.js');
-var init = require('../../lib/index.js').init;
+var init = require('../init');
 
 
 describe('file.js', function() {
 
+  before(function(done) {
+    init("randomAccessToken", __dirname, done);
+  });
+
+  after(function(done) {
+    init.clean(done);
+  });
+
   it('should get the cursor', function(done) {
-    init("randomAccessToken", __dirname, "test");
 
     var fakeCursor = {
       '/txt1.txt': fs.statSync(path.resolve(GLOBAL.WATCHED_DIR + '/../sample-directory/txt1.txt')).mtime.getTime(),
@@ -37,12 +44,5 @@ describe('file.js', function() {
     ], done);
   });
 
-  after(function() {
-    // Clean cursor
-    try {
-      fs.unlinkSync(GLOBAL.CURSOR_PATH);
-    }
-    catch(e) {}
-  });
 
 });

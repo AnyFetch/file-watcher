@@ -6,7 +6,7 @@ var path = require('path');
 
 var uploadFile = require('../../lib/helpers/upload').uploadFile;
 var deleteFile = require('../../lib/helpers/upload').deleteFile;
-var init = require('../../lib/index.js').init;
+var init = require('../init');
 
 describe('API Calls', function() {
   var port = 1338;
@@ -27,8 +27,7 @@ describe('API Calls', function() {
   };
   var apiServer;
 
-  before(function() {
-    init("randomAccessToken", path.resolve(__dirname + "../../sample-directory"), "test");
+  before(function(done) {
     // Create a fake HTTP server
     apiServer = Anyfetch.createMockServer();
     apiServer.override("delete", "/documents/identifier/:identifier", deleteDocument);
@@ -36,11 +35,13 @@ describe('API Calls', function() {
     apiServer.listen(port, function() {
       Anyfetch.setApiUrl(apiUrl);
     });
+    init("randomAccessToken", path.resolve(__dirname + "../../sample-directory"), done);
   });
 
-  after(function(){
+  after(function(done){
     require("../../lib/helpers/file.js").saveSync();
     apiServer.close();
+    init.clean(done);
   });
 
   it('should upload the file', function(done) {

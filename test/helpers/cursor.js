@@ -7,19 +7,15 @@ var path = require('path');
 var async = require('async');
 
 var cursor = require('../../lib/helpers/cursor');
-var init = require('../../lib/index.js').init;
+var init = require('../init');
 
 describe("Cursor", function() {
-  beforeEach(function() {
-    init("randomAccessToken", __dirname, "test");
+  beforeEach(function(done) {
+    init("randomAccessToken", __dirname, done);
   });
 
-  after(function() {
-    // Clean cursor
-    try {
-      fs.unlinkSync(GLOBAL.CURSOR_PATH);
-    }
-    catch(e) {}
+  afterEach(function(done) {
+    init.clean(done);
   });
 
   describe('addOrUpdateFile()', function() {
@@ -35,15 +31,6 @@ describe("Cursor", function() {
       done();
 
     });
-
-    after(function() {
-      // Clean cursor
-      try {
-        fs.unlinkSync(GLOBAL.CURSOR_PATH);
-      }
-      catch(e) {}
-    });
-
   });
 
   describe('removeFile()', function() {

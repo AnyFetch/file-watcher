@@ -6,13 +6,11 @@ var fs = require('fs');
 var Anyfetch = require('anyfetch');
 
 var watcher = require('../lib/watcher');
-var init = require('../lib/').init;
+var init = require('./init');
 
 
 describe('watcher', function() {
-  init("randomAccessToken", __dirname, "test");
-
-  watcher("randomToken");
+  init("randomAccessToken", __dirname, watcher);
 
   var port = 1338;
   var apiUrl = 'http://localhost:' + port;
@@ -43,20 +41,13 @@ describe('watcher', function() {
     });
   });
 
-  beforeEach(function() {
-    init("randomAccessToken", __dirname, "test");
+  beforeEach(function(done) {
+    init("randomAccessToken", __dirname, done);
   });
 
-  after(function(){
+  after(function(done){
     apiServer.close();
-  });
-
-  after(function() {
-    // Clean cursor
-    try {
-      fs.unlinkSync(GLOBAL.CURSOR_PATH);
-    }
-    catch(e) {}
+    init.clean(done);
   });
 
   it('should send file on creation', function(done) {

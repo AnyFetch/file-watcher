@@ -4,10 +4,9 @@ require('should');
 
 var path = require('path');
 var Anyfetch = require('anyfetch');
-var fs = require('fs');
 
 var sendToAnyFetch = require('../lib/').sendToAnyFetch;
-var init = require('../lib/').init;
+var init = require('./init');
 
 describe('sendToAnyFetch() function', function() {
   var port = 1338;
@@ -21,28 +20,18 @@ describe('sendToAnyFetch() function', function() {
   };
 
   var apiServer;
-  before(function() {
-    init("randomAccessToken", path.resolve(__dirname + "../../test/sample-directory"), "test");
-    // Clean cursor
-    try {
-      fs.unlinkSync(GLOBAL.CURSOR_PATH);
-    }
-    catch(e) {}
-    // Create a fake HTTP server
+  before(function(done) {
     apiServer = Anyfetch.createMockServer();
     apiServer.override("post", "/documents/:id/file", uploadFile);
     apiServer.listen(port, function() {
       Anyfetch.setApiUrl(apiUrl);
     });
+    init("randomAccessToken", path.resolve(__dirname + "../../test/sample-directory"),  done);
   });
 
-  after(function(){
+  after(function(done){
     apiServer.close();
-    // Clean cursor
-    try {
-      fs.unlinkSync(GLOBAL.CURSOR_PATH);
-    }
-    catch(e) {}
+    init.clean(done);
   });
 
   it('should update account', function(done) {

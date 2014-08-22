@@ -4,9 +4,8 @@
 
 var fs = require('fs');
 var read = require("read");
-var saveSync = require('../lib/helpers/file').saveSync;
 
-var start = require('../lib');
+var filewatcher = require('../lib');
 
 if (process.argv.length < 3) {
   console.warn("You have to provide a directory");
@@ -22,18 +21,12 @@ if (!fs.lstatSync(process.argv[2]).isDirectory()) {
 
 if (!process.argv[3]) {
   read({prompt: 'Token: ', silent: true}, function(err, token) {
-    start(process.argv[2], token, function() {});
+    filewatcher(process.argv[3], token, function() {});
   });
 }
 else {
-  start(process.argv[2], process.argv[3], function() {});
+  filewatcher(process.argv[3], process.argv[2], function() {});
 }
 
-process.on('SIGINT', function() {
-  saveSync();
-  process.exit(0);
-});
-process.on('SIGTERM', function() {
-  saveSync();
-  process.exit(0);
-});
+filewatcher.sendToAnyfetch(function() {});
+filewatcher.watch();
