@@ -25,3 +25,7 @@ You can define a BULK_SAVE variable to modify the number of files to save in the
 
 ## Reset
 Every time you run this command, a JSON file is stored in `~/.anyfetch-file-watcher/$STRIPPED_DIRECTORY.json` with cursor details. If you want to resend everything, remove this file.
+
+
+## Known bugs
+There is a bug in local files deletion detection if these files have non ascii character in their name.
