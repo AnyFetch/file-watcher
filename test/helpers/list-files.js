@@ -20,11 +20,11 @@ describe('list-files', function() {
         if(err) {
           throw err;
         }
-        Object.keys(cursor).should.include('/txt1.txt');
-        Object.keys(cursor).should.include('/txt2.txt');
-        Object.keys(cursor).should.include('/txt3.txt');
-        Object.keys(cursor).should.include('/test/txt1.doc');
-        Object.keys(cursor).should.include('/test/txt2.txt');
+        Object.keys(cursor).should.containEql('/txt1.txt');
+        Object.keys(cursor).should.containEql('/txt2.txt');
+        Object.keys(cursor).should.containEql('/txt3.txt');
+        Object.keys(cursor).should.containEql('/test/txt1.doc');
+        Object.keys(cursor).should.containEql('/test/txt2.txt');
         Object.keys(cursor).should.have.lengthOf(5);
         done();
       });
